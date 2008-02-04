@@ -1,4 +1,4 @@
-#summary User Guide
+#summary The User Guide gives a brief description of JCROM to get you started.
 #labels Featured
 
 = What is JCROM? =
@@ -152,8 +152,8 @@ I find it easiest to explain by example. Therefore, this user guide is written m
 
 To use JCROM, you'll need the JCROM jar in your classpath. There are a few ways you can achieve this:
 
-  # Download it directly from jcrom.org (note that you will need to download the external dependencies as well)
-  # If you use Maven2 to manage your project, you can reference JCROM as a dependency:
+  * Download it directly from jcrom.org (note that you will need to download the external dependencies as well)
+  * If you use Maven2 to manage your project, you can reference JCROM as a dependency:
   {{{
   <dependency>
 	<groupId>org.jcrom</groupId>
@@ -161,9 +161,85 @@ To use JCROM, you'll need the JCROM jar in your classpath. There are a few ways 
 	<version>1.0</version>
   </dependency>
   }}}
-
-  # Finally, you can check out from subversion and build it yourself. You will need Maven2 for this. After you've checked out the project, cd into the jcrom folder, and run "mvn install".
+  * Finally, you can check out from subversion and build it yourself. You will need Maven2 for this. After you've checked out the project, cd into the jcrom folder, and run "mvn install".
 
 = Annotating your Java classes =
 
 To use JCROM, you need to be able to annotate the class you want to map. All the JCROM annotations are on the field level, except for one that is on the class level. I'll introduce the most important ones, and then give a table of all the annotations. Let's assume that we have the following Java class:
+
+{{{
+import java.util.Date;
+
+public class WeblogEntry {
+
+	private String title;
+	private String excerpt;
+	private String body;
+	private Date publishDate;
+	
+	// ... getters and setters
+}
+}}}
+
+We have four simple fields here. Let's look at the class after annotating it with JCROM annotations:
+
+{{{
+import java.util.Date;
+import org.jcrom.annotations.JcrName;
+import org.jcrom.annotations.JcrProperty;
+
+public class WeblogEntry {
+	
+	@JcrName private String name;
+	@JcrProperty private String title;
+	@JcrProperty private String excerpt;
+	@JcrProperty private String body;
+	@JcrProperty private Date publishDate;
+	
+	public void setTitle( String title ) {
+		this.title = title;
+		this.name = title;
+	}
+	
+	// ... other getters and setters
+}
+}}}
+
+Two things to notice here. First of all, we've added a new field, "name", with the annotation @JcrName. The @JcrName annotation is mandatory: each class that is to be mapped using JCROM must have a String field that is annotated with @JcrName. This will be mapped to the node name, and will therefore represent the last token in the path to the node. The reason we've created another field, rather than use the title field, is that JCROM will clean the @JcrName field when mapping to a node name ("Hello, world!" would become "Hello_world"). We therefore store the original title in the title field, and the clean version in the name field (note that in the title setter we set the name as well). 
+
+The second thing to notice, is that we have annotated the other fields using @JcrProperty. JCROM will map all fields annotated with @JcrProperty to a property on the node. For a list of valid property types, see the table later in this chapter. @JcrProperty can be also be used for multi-value properties, but such fields need to be mapped as java.util.List, parameterized with a valid field type (more on this in the annotation reference below).
+
+In general, to annotate your object for JCROM, you do the following:
+
+  # Annotate a String field with @JcrName. This will store the node name (cleaned up).
+  # Annotate the class with @JcrNode if you need to specify a custom node type to map to.
+  # Annotate fields with @JcrProperty. Multi-valued fields should be represented as a java.util.List with a valid property parameter.
+  # Annotate child objects with @JcrChildNode. The child objects must be annotated with JCROM annotations. Multiple children are represented as a java.util.List, parameterized with the child object type.
+  # Annotate parent object references with @JcrParentNode.
+  # Annotate file objects with @JcrFileNode.
+  # Annotate files for storing read-only JCR information with @JcrUUID, @JcrCreated, or @JcrPath.
+
+I'll now describe these steps in more detail.
+
+Note:
+  * JCROM uses field level annotation, not method level. The fields can be private. Therefore there is no requirement for getter and setter methods.
+  * JCROM handles inheritance, so annotations from superclasses are automatically detected.
+
+== Node types ==
+
+By default, JCROM maps objects to the nt:unstructured node type (the JcrFile class is an exception, more on that later!). This is handy for many cases, as it is a node type that allows any properties and child nodes. You can get up and running very quickly using this node type, and you can always add structure later.
+
+However, if you have stricter requirements, and want to map your Java object to a custom node type, then you can use the @JcrNode annotation. This annotation is the only JCROM annotation that works on the type level (classes, interfaces). To map your class to a custom node type, simply annotate it as follows:
+
+{{{
+import org.jcrom.annotations.JcrName;
+import org.jcrom.annotations.JcrNode;
+
+@JcrNode(nodeType = "my:type")
+public class MyClass {
+	@JcrName private String name;
+	...
+}
+}}}
+
+== Properties ==
