@@ -7,6 +7,9 @@ JCROM is an acronym that stands for Java Content Repository Object Mapper. It is
 
 == Java Content Repository (the JCR part of JCROM) ==
 
+The [http://jcp.org/en/jsr/detail?id=170 JCR specification (JSR-170)] is one of the most exciting things to come out in the Java world lately. The JCR API is a standard, implementation independent, way to access content bi-directionally on a granular level to a content repository. It take the best of both the database and file system worlds, and adds a layer of extra services on top of that (versioning, full-text search, multi-valued properties, observations, etc.).
+
+Although the spec has been out for a while (since 2005), JCR is now really starting to gain momentum with good open source implementations like [http://jackrabbit.apache.org Jackrabbit].
 
 == Object Mapping (the OM part of JCROM) ==
 
@@ -152,7 +155,7 @@ I find it easiest to explain by example. Therefore, this user guide is written m
 
 To use JCROM, you'll need the JCROM jar in your classpath. There are a few ways you can achieve this:
 
-  * Download it directly from jcrom.org (note that you will need to download the external dependencies as well)
+  * Download it directly from http://jcrom.org (note that you will need to download the external dependencies as well)
   * If you use Maven2 to manage your project, you can reference JCROM as a dependency:
   {{{
   <dependency>
@@ -243,3 +246,11 @@ public class MyClass {
 }}}
 
 == Properties ==
+
+We can map fields to JCR node properties. There are two categories of properties.
+
+=== Custom properties ===
+
+You can map your Java fields to custom JCR properties
+
+=== Named read-only JCR properties ===
