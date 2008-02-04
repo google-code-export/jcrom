@@ -251,6 +251,60 @@ We can map fields to JCR node properties. There are two categories of properties
 
 === Custom properties ===
 
-You can map your Java fields to custom JCR properties
+You can map your Java fields to custom JCR properties using the @JcrProperty annotation. The following table shows which field types are valid for @JcrProperty annotation, and what JCR type they are mapped to:
+
+|| *Java type* || *JCR type* ||
+|| String || STRING ||
+|| Boolean, boolean || BOOLEAN ||
+|| Double, double || DOUBLE ||
+|| Integer, int || DOUBLE ||
+|| Long, long || LONG ||
+|| byte[] || BINARY ||
+|| java.io.InputStream || BINARY ||
+|| java.util.Date || DATE ||
+|| java.util.Calendar || DATE ||
+|| java.sql.Timestamp || DATE ||
+
+If we try to map a class with a @JcrProperty annotated field of type other than the above, we will get an exception telling us that the type is invalid.
+
+We can map multi-valued properties using a java.util.List, as long as the List is parameterized with one of the Java types in the table above. For example:
+
+{{{
+import java.util.List;
+import org.jcrom.annotations.JcrName;
+import org.jcrom.annotations.JcrProperty;
+
+public class MyClass {
+
+    @JcrName private String name;
+    @JcrProperty private int mySingleValue;
+    @JcrProperty List<String> myMultiValues;
+
+    ...
+}
+}}}
+
+The name of the JCR property will by default be the same as the name of the Java field. If you need to override this (for example to use namespaces), you can do so using the name parameter on the @JcrProperty annotation:
+
+{{{
+import org.jcrom.annotations.JcrName;
+import org.jcrom.annotations.JcrProperty;
+
+public class MyClass {
+
+    @JcrName private String name;
+    @JcrProperty(name = "my:singleValue") private int mySingleValue;
+
+    ...
+}
+}}}
 
 === Named read-only JCR properties ===
+
+Depending on the node types and/or mixin types you use when mapping a Java object to JCR, the JCR will create default properties. JCROM provides a set of annotations to map to those read-only properties. This is useful if you want to use these properties in your Java code:
+
+  * *@JcrUUID* - If the node has a generated UUID stored in a jcr:uuid property (e.g. it is of the mixin type mix:referenceable), then that value will be read into the field annotated with this annotation. This must be a String field.
+  * *@JcrPath* - The full path to the node representing the Java object will be read into a field annotated with this annotation. This must be a String field.
+  * *@JcrCreated* - If the node has a creation date stored in a jcr:created property (e.g. it is of a type that extends nt:hierarchyNode), then that value will be read into the field annotated with this annotation. 
+
+== Child nodes ==
