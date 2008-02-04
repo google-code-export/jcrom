@@ -267,20 +267,25 @@ You can map your Java fields to custom JCR properties using the @JcrProperty ann
 
 If we try to map a class with a @JcrProperty annotated field of type other than the above, we will get an exception telling us that the type is invalid.
 
-We can map multi-valued properties using a java.util.List, as long as the List is parameterized with one of the Java types in the table above. For example:
+We can map multi-valued properties using a java.util.List, as long as the List is parameterized with one of the Java types in the table above. For example, our WeblogEntry class might need a list of tags:
 
 {{{
+import java.util.Date;
 import java.util.List;
 import org.jcrom.annotations.JcrName;
 import org.jcrom.annotations.JcrProperty;
 
-public class MyClass {
+public class WeblogEntry {
+	
+	@JcrName private String name;
+	@JcrProperty private String title;
+	@JcrProperty private String excerpt;
+	@JcrProperty private String body;
+	@JcrProperty private Date publishDate;
 
-    @JcrName private String name;
-    @JcrProperty private int mySingleValue;
-    @JcrProperty List<String> myMultiValues;
-
-    ...
+	@JcrProperty private List<String> tags;
+	
+	...
 }
 }}}
 
@@ -308,3 +313,116 @@ Depending on the node types and/or mixin types you use when mapping a Java objec
   * *@JcrCreated* - If the node has a creation date stored in a jcr:created property (e.g. it is of a type that extends nt:hierarchyNode), then that value will be read into the field annotated with this annotation. 
 
 == Child nodes ==
+
+Often we have to deal with an object structure that is not just a flat list of fields, but rather a tree of objects. For example, our WeblogEntry class that we described above, might have an Author. For this purpose, JCROM has the @JcrChildNode annotation. With this annotation, we can specify that our class has a child field which itself needs to be mapped to a JCR node:
+
+{{{
+import java.util.Date;
+import java.util.List;
+import org.jcrom.annotations.JcrChildNode;
+import org.jcrom.annotations.JcrName;
+import org.jcrom.annotations.JcrProperty;
+
+public class WeblogEntry {
+	
+	@JcrName private String name;
+	@JcrProperty private String title;
+	@JcrProperty private String excerpt;
+	@JcrProperty private String body;
+	@JcrProperty private Date publishDate;
+
+	@JcrProperty private List<String> tags;
+
+	@JcrChildNode private Author author;
+	
+	...
+}
+}}}
+
+We have to make sure that classes marked as child nodes are correctly annotated as well. So in this case we need to annotate the Author class accordingly:
+
+{{{
+import org.jcrom.annotations.JcrName;
+import org.jcrom.annotations.JcrProperty;
+
+public class Author {
+	@JcrName private String username;
+	@JcrProperty private String firstName;
+	@JcrProperty private String lastName;
+	@JcrProperty private String emailAddress;
+}
+}}}
+
+In a production environment, we would probably reference the author rather than including it, but this will do fine for demonstration purposes.
+
+JCROM also supports mapping a list of children. This must be done using a java.util.List parameterized with the annotated child class. For example, our WeblogEntry class might need a list of comments. We would add this in the following way:
+
+{{{
+import java.util.Date;
+import java.util.List;
+import org.jcrom.annotations.JcrChildNode;
+import org.jcrom.annotations.JcrName;
+import org.jcrom.annotations.JcrProperty;
+
+public class WeblogEntry {
+	
+	@JcrName private String name;
+	@JcrProperty private String title;
+	@JcrProperty private String excerpt;
+	@JcrProperty private String body;
+	@JcrProperty private Date publishDate;
+
+	@JcrProperty private List<String> tags;
+
+	@JcrChildNode private Author author;
+	@JcrChildNode private List<Comment> comments;
+	
+	...
+}
+}}}
+
+And of course we would have to annotate the Comment class accordingly:
+
+{{{
+import java.util.Date;
+import org.jcrom.annotations.JcrName;
+import org.jcrom.annotations.JcrProperty;
+
+public class Comment {
+
+	@JcrName private String name;
+	@JcrProperty private String title;
+	@JcrProperty private String body;
+	@JcrProperty private Date publishDate;
+
+	...
+}
+}}}
+
+The child nodes can have their own children if needed, and in fact there is no difference in the annotation of the parent or children classes. For example, each Comment should have an author, but I'll leave it like this for now.
+
+JCROM creates a container node for each child node. The name of this container node is by default the field name, but if you need to customise the name, you can do so by specifying a name parameter on the @JcrChildNode annotation:
+
+{{{
+import org.jcrom.annotations.JcrChildNode;
+import org.jcrom.annotations.JcrName;
+import org.jcrom.annotations.JcrProperty;
+
+public class MyClass {
+
+    @JcrName private String name;
+    @JcrProperty(name = "my:singleValue") private int mySingleValue;
+    @JcrChildNode(name = "my:child") private Child child;
+
+    ...
+}
+}}}
+
+To visualise how this container node mapping works, consider the following example. Let's say we have a WeblogEntry with the title "Hello world!", written by an author with the username "john", and with two comments. The node structure would then look like this (ignoring properties):
+
+{{{
+/Weblog/Hello_world
+/Weblog/Hello_world/author/john
+/Weblog/Hello_world/comments/I_like_your_post
+/Weblog/Hello_world/comments/Me_too
+}}}
