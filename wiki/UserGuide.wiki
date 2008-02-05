@@ -626,6 +626,15 @@ try {
 }
 }}}
 
+If you need to pass in mixin types when adding the node, then use another version of addNode():
+
+{{{
+...
+String[] mixinTypes = {"mix:referenceable"};
+jcrom.addNode(parentNode, weblogEntry, mixinTypes);
+...
+}}}
+
 And then if we later want to add a comment to that WeblogEntry:
 
 {{{
