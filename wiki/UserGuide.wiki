@@ -46,7 +46,7 @@ public class Restaurant {
 }
 }}}
 
-To map a Hotel instance with a single restaurant to a JCR repository, we would need to do something like this (let's assume the Hotel object has been initialised with all relevant data):
+To map a Hotel instance with restaurants to a JCR repository, we would need to do something like this (let's assume the Hotel object has been initialised with all relevant data):
 
 {{{
 Hotel hotel = ...;
