@@ -1,0 +1,10 @@
+#summary List of runtime JAR dependencies.
+
+= Dependencies =
+
+JCROM depends on the following third party JARs:
+
+  * JCR API, version 1.0 ([http://repo1.maven.org/maven2/javax/jcr/jcr/1.0/jcr-1.0.jar get it here])
+  * SLF4J API, version 1.4.3 ([http://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.4.3/slf4j-api-1.4.3.jar get it here])
+
+If you use Maven2 to build your project, it will automatically download all dependencies for you.
