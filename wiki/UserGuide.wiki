@@ -146,7 +146,6 @@ To summarise:
 
 What JCROM does not do at the moment:
   * support references
-  * support same name siblings (not recommended anyway)
   * support mapping of legacy objects via XML
 
 I find it easiest to explain by example. Therefore, this user guide is written more in a tutorial style than as a reference.
