@@ -680,7 +680,7 @@ There are times when you don't want to load/update some/any child nodes. For exa
 
     * "comments" will include only the comments children
     * "-comments" will include everything but the comments children
-    * "*" will include all children
+    * star will include all children
     * "none" will exclude all children
 
   * _maxDepth_ - the maximum depth of included child nodes (0 means no child nodes are loaded, while a negative value means that no restrictions are set on the depth).
