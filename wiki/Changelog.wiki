@@ -1,0 +1,9 @@
+=Release 1.1 (23.02.2008)=
+
+Some bugfixes, but also enhancements such as support for references, and versioning support in the DAO classes.
+
+Issues resolved: http://code.google.com/p/jcrom/issues/list?q=label%3AMilestone-Release1.1&can=1
+
+=Release 1.0 (04.02.2008)=
+
+This is the initial release of JCROM.
