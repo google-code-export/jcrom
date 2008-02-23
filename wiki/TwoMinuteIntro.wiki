@@ -45,6 +45,7 @@ import org.jcrom.annotations.JcrChildNode;
 public class Contact {
 
     @JcrName private String username;
+    @JcrPath private String path;
     @JcrProperty private String fullName;
     @JcrProperty private String emailAddress;
 
@@ -63,6 +64,7 @@ import org.jcrom.annotations.JcrProperty;
 public class Address {
 
     @JcrName private String name;
+    @JcrPath private String path;
     @JcrProperty private String street;
     @JcrProperty private String city;
     @JcrProperty private String postCode;
@@ -140,11 +142,9 @@ import org.jcrom.Jcrom;
 import org.jcrom.dao.AbstractJcrDAO;
 
 public class ContactDAO extends AbstractJcrDAO<Contact> {
-
-        private static final String ROOT_PATH = "Contacts";
         
         public ContactDAO( Session session, Jcrom jcrom ) {
-                super(Contact.class, ROOT_PATH, session, jcrom, true, new String[0]);
+                super(Contact.class, session, jcrom, new String[0]);
         }
 }
 }}}
@@ -160,8 +160,8 @@ Contact contact = ...;
 ContactDAO contactDAO = new ContactDAO(session, jcrom);
 contactDAO.create(contact);
 
-Contact anotherContact = contactDAO.get(username);
-List<Contact> allContacts = contactDAO.findAll();
+Contact anotherContact = contactDAO.get(contact.getPath());
+List<Contact> allContacts = contactDAO.findAll("Contacts");
 }}}
 
 In a web application environment, we would probably inject the Session and the Jcrom instance into the DAO, and then inject the DAO into a controller, so the controller would never directly deal with Jcrom or the Session.
