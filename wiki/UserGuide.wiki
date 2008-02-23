@@ -802,23 +802,52 @@ import javax.jcr.Node;
 public interface JcrDAO<T> {
 
 	public Node create( T entity ) throws Exception;
+	
 	public String update( T entity ) throws Exception;
-	public String update( T entity, String oldName ) throws Exception;
-	public String update( T entity, String childNodeFilter, int maxDepth ) throws Exception;
-	public String update( T entity, String oldName, String childNodeFilter, int maxDepth ) throws Exception;
+	public String update( T entity, String childNameFilter, int maxDepth ) throws Exception;
 	public String updateByUUID( T entity, String uuid ) throws Exception;
-	public String updateByUUID( T entity, String uuid, String childNodeFilter, int maxDepth ) throws Exception;
-	public void delete( String name ) throws Exception;
+	public String updateByUUID( T entity, String uuid, String childNameFilter, int maxDepth ) throws Exception;
+		
+	public void delete( String path ) throws Exception;
 	public void deleteByUUID( String uuid ) throws Exception;
-	public boolean exists( String name ) throws Exception;
-	public T get( String name ) throws Exception;
-	public T get( String name, String childNodeFilter, int maxDepth ) throws Exception;
+
+	public boolean exists( String path ) throws Exception;
+
+	public T get( String path ) throws Exception;
+	public T get( String path, String childNodeFilter, int maxDepth ) throws Exception;
+	
 	public T loadByUUID( String uuid ) throws Exception;
 	public T loadByUUID( String uuid, String childNodeFilter, int maxDepth ) throws Exception;
-	public List<T> findAll() throws Exception;
-	public List<T> findAll( long startIndex, long resultSize ) throws Exception;
-	public List<T> findAll( String childNameFilter, int maxDepth ) throws Exception;
-	public List<T> findAll( String childNameFilter, int maxDepth, long startIndex, long resultSize ) throws Exception;
+	
+	public List<T> getVersionList( String path ) throws Exception;
+	public List<T> getVersionList( String path, String childNameFilter, int maxDepth ) throws Exception;
+	public List<T> getVersionList( String path, String childNameFilter, int maxDepth, long startIndex, long resultSize ) throws Exception;
+	
+	public List<T> getVersionListByUUID( String uuid ) throws Exception;
+	public List<T> getVersionListByUUID( String uuid, String childNameFilter, int maxDepth ) throws Exception;
+	public List<T> getVersionListByUUID( String uuid, String childNameFilter, int maxDepth, long startIndex, long resultSize ) throws Exception;
+	
+	public long getVersionSize( String path ) throws Exception;
+	public long getVersionSizeByUUID( String uuid ) throws Exception;
+	
+	public T getVersion( String path, String versionName ) throws Exception;
+	public T getVersion( String path, String versionName, String childNodeFilter, int maxDepth ) throws Exception;
+	
+	public T getVersionByUUID( String uuid, String versionName ) throws Exception;
+	public T getVersionByUUID( String uuid, String versionName, String childNodeFilter, int maxDepth ) throws Exception;
+	
+	public void restoreVersion( String path, String versionName ) throws Exception;
+	public void restoreVersionByUUID( String uuid, String versionName ) throws Exception;
+	
+	public void removeVersion( String path, String versionName ) throws Exception;
+	public void removeVersionByUUID( String uuid, String versionName ) throws Exception;
+	
+	public long getSize( String rootPath ) throws Exception;
+	
+	public List<T> findAll( String rootPath ) throws Exception;
+	public List<T> findAll( String rootPath, long startIndex, long resultSize ) throws Exception;
+	public List<T> findAll( String rootPath, String childNameFilter, int maxDepth ) throws Exception;
+	public List<T> findAll( String rootPath, String childNameFilter, int maxDepth, long startIndex, long resultSize ) throws Exception;
 
 }
 }}}
@@ -835,11 +864,10 @@ import org.jcrom.dao.AbstractJcrDAO;
 
 public class WeblogEntryDAO extends AbstractJcrDAO<WeblogEntry> {
 
-	private static final String ROOT_PATH = "Weblog";
 	private static final String[] MIXIN_TYPES = {"mix:referenceable"};
 	
 	public WeblogEntryDAO( Session session, Jcrom jcrom ) {
-		super(WeblogEntry.class, ROOT_PATH, session, jcrom, true, MIXIN_TYPES);
+		super(WeblogEntry.class, session, jcrom, MIXIN_TYPES);
 	}
 }
 }}}
@@ -849,10 +877,11 @@ Since all the methods are implemented for us, the only thing we need to do is im
 {{{
 Jcrom jcrom = ...;
 Session session = ...;
+String weblogEntryPath = ...;
 try {
     WeblogEntryDAO weblogEntryDAO = new WeblogEntryDAO(session, jcrom);
 
-    WeblogEntry weblogEntry = weblogEntryDAO.get("Hello_world");
+    WeblogEntry weblogEntry = weblogEntryDAO.get(weblogEntryPath);
     weblogEntry.setExcerpt("This is the excerpt");
 
     weblogEntryDAO.update(weblogEntry);
@@ -880,6 +909,40 @@ public List<WeblogEntry> findByStartChars( String chars ) throws Exception {
 }}}
 
 As you can see, adding custom finder methods is really easy.
+
+== Versioning ==
+
+The DAO implementation handles versioning transparently. If "mix:versionable" is one of the mixin types, then the AbstractJcrDAO class will automatically perform checkout and checkin on all write operations. Retrieving all versions of a node using the JCR API is a bit complex and needs many lines of code. The DAO simplifies this task with methods that retrieve the versions and automatically map to objects:
+
+{{{
+Jcrom jcrom = ...;
+Session session = ...;
+try {
+    VersionedDAO versionedDao = new VersionedDAO(session, jcrom);
+    
+    VersionedEntity entity = new VersionedEntity();
+    entity.setBody("first");
+    // set other values
+    ...
+
+    versionedDao.create(entity); // this creates the first version
+
+    entity.setBody("second");
+    versionedDao.update(entity); // this creates a new version
+
+    // we can get a list of all versions
+    List<VersionedEntity> versions = versionedDao.getVersionList(entity.getPath());
+
+    // we can also get one specific version
+    VersionedEntity oldEntity = versionedDao.getVersion(entity.getPath(), "1.0");
+
+    // and we can restore a version
+    versionedDao.restoreVersion(entity.getPath(), "1.0");
+ 
+} finally {
+    session.logout();
+}
+}}}
 
 = Using with Guice =
 
