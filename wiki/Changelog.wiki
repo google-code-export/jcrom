@@ -1,3 +1,5 @@
+#summary List of all JCROM releases, and issues resolved in each release.
+
 =Release 1.1 (23.02.2008)=
 
 Some bugfixes, but also enhancements such as support for references, and versioning support in the DAO classes.
