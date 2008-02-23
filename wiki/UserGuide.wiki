@@ -1,4 +1,4 @@
-#summary The User Guide gives a brief description of JCROM to get you started.
+#summary The User Guide gives a brief description of JCROM to get you started. Written for version 1.1.
 #labels Featured
 
 = What is JCROM? =
@@ -145,7 +145,6 @@ To summarise:
   * vision: do for JCR what Hibernate did for JDBC
 
 What JCROM does not do at the moment:
-  * support references
   * support mapping of legacy objects via XML
 
 I find it easiest to explain by example. Therefore, this user guide is written more in a tutorial style than as a reference.
@@ -160,7 +159,7 @@ To use JCROM, you'll need the JCROM jar in your classpath. There are a few ways 
   <dependency>
 	<groupId>org.jcrom</groupId>
 	<artifactId>jcrom</artifactId>
-	<version>1.0</version>
+	<version>1.1</version>
   </dependency>
   }}}
   * Finally, you can check out from subversion and build it yourself. You will need Maven2 for this. After you've checked out the project, cd into the jcrom folder, and run "mvn install".
@@ -188,11 +187,13 @@ We have four simple fields here. Let's look at the class after annotating it wit
 {{{
 import java.util.Date;
 import org.jcrom.annotations.JcrName;
+import org.jcrom.annotations.JcrPath;
 import org.jcrom.annotations.JcrProperty;
 
 public class WeblogEntry {
 	
 	@JcrName private String name;
+	@JcrPath private String path;
 	@JcrProperty private String title;
 	@JcrProperty private String excerpt;
 	@JcrProperty private String body;
@@ -207,19 +208,22 @@ public class WeblogEntry {
 }
 }}}
 
-Two things to notice here. First of all, we've added a new field, "name", with the annotation @JcrName. The @JcrName annotation is mandatory: each class that is to be mapped using JCROM must have a String field that is annotated with @JcrName. This will be mapped to the node name, and will therefore represent the last token in the path to the node. The reason we've created another field, rather than use the title field, is that JCROM will clean the @JcrName field when mapping to a node name ("Hello, world!" would become "Hello_world"). We therefore store the original title in the title field, and the clean version in the name field (note that in the title setter we set the name as well). 
+Two things to notice here. First of all, we've added a new field, "name", with the annotation @JcrName. The @JcrName annotation is mandatory: each class that is to be mapped using JCROM must have a String field that is annotated with @JcrName. This will be mapped to the node name, and will therefore represent the last token in the path to the node. The reason we've created another field, rather than use the title field, is that JCROM will clean the @JcrName field when mapping to a node name ("Hello, world!" would become "Hello_world"). We therefore store the original title in the title field, and the clean version in the name field (note that in the title setter we set the name as well). We've also added a "path" field, annotated with @JcrPath. This is also mandatory. The path field is a JCR read-only field that will contain the full path to the JCR node storing the object.
+
+Note that the name cleanup can be turned off by using the Jcrom( boolean cleanName ) constructor.
 
 The second thing to notice, is that we have annotated the other fields using @JcrProperty. JCROM will map all fields annotated with @JcrProperty to a property on the node. For a list of valid property types, see the table later in this chapter. @JcrProperty can be also be used for multi-value properties, but such fields need to be mapped as java.util.List, parameterized with a valid field type (more on this in the annotation reference below).
 
 In general, to annotate your object for JCROM, you do the following:
 
-  # Annotate a String field with @JcrName. This will store the node name (cleaned up).
+  # Annotate a String field with @JcrName. This will store the node name. Mandatory.
+  # Annotate a String field with @JcrPath. This will store the full node path. Mandatory.
   # Annotate the class with @JcrNode if you need to specify a custom node type to map to.
   # Annotate fields with @JcrProperty. Multi-valued fields should be represented as a java.util.List with a valid property parameter.
   # Annotate child objects with @JcrChildNode. The child objects must be annotated with JCROM annotations. Multiple children are represented as a java.util.List, parameterized with the child object type.
   # Annotate parent object references with @JcrParentNode.
   # Annotate file objects with @JcrFileNode.
-  # Annotate files for storing read-only JCR information with @JcrUUID, @JcrCreated, or @JcrPath.
+  # Annotate files for storing read-only JCR information with @JcrUUID, @JcrCreated.
 
 I'll now describe these steps in more detail.
 
@@ -235,11 +239,13 @@ However, if you have stricter requirements, and want to map your Java object to 
 
 {{{
 import org.jcrom.annotations.JcrName;
+import org.jcrom.annotations.JcrPath;
 import org.jcrom.annotations.JcrNode;
 
 @JcrNode(nodeType = "my:type")
 public class MyClass {
 	@JcrName private String name;
+	@JcrPath private String path;
 	...
 }
 }}}
@@ -272,11 +278,13 @@ We can map multi-valued properties using a java.util.List, as long as the List i
 import java.util.Date;
 import java.util.List;
 import org.jcrom.annotations.JcrName;
+import org.jcrom.annotations.JcrPath;
 import org.jcrom.annotations.JcrProperty;
 
 public class WeblogEntry {
 	
 	@JcrName private String name;
+	@JcrPath private String path;
 	@JcrProperty private String title;
 	@JcrProperty private String excerpt;
 	@JcrProperty private String body;
@@ -292,11 +300,13 @@ The name of the JCR property will by default be the same as the name of the Java
 
 {{{
 import org.jcrom.annotations.JcrName;
+import org.jcrom.annotations.JcrPath;
 import org.jcrom.annotations.JcrProperty;
 
 public class MyClass {
 
     @JcrName private String name;
+    @JcrPath private String path;
     @JcrProperty(name = "my:singleValue") private int mySingleValue;
 
     ...
@@ -307,9 +317,13 @@ public class MyClass {
 
 Depending on the node types and/or mixin types you use when mapping a Java object to JCR, the JCR will create default properties. JCROM provides a set of annotations to map to those read-only properties. This is useful if you want to use these properties in your Java code:
 
-  * *@JcrUUID* - If the node has a generated UUID stored in a jcr:uuid property (e.g. it is of the mixin type mix:referenceable), then that value will be read into the field annotated with this annotation. This must be a String field.
-  * *@JcrPath* - The full path to the node representing the Java object will be read into a field annotated with this annotation. This must be a String field.
-  * *@JcrCreated* - If the node has a creation date stored in a jcr:created property (e.g. it is of a type that extends nt:hierarchyNode), then that value will be read into the field annotated with this annotation. 
+  * _@JcrUUID_ - If the node has a generated UUID stored in a jcr:uuid property (e.g. it is of the mixin type mix:referenceable), then that value will be read into the field annotated with this annotation. This must be a String field.
+  * _@JcrCreated_ - If the node has a creation date stored in a jcr:created property (e.g. it is of a type that extends nt:hierarchyNode), then that value will be read into the field annotated with this annotation.
+  * _@JcrCheckedout_ - For a versioned node, stores whether the node is checked out. Must be on a boolean field.
+  * _@JcrBaseVersionName_ - For a versioned node, stores the name of the base version.
+  * _@JcrBaseVersionCreated_ - For a versioned node, stores the creation date of the base version.
+  * _@JcrVersionName_ - For a node version, stores the name of that version.
+  * _@JcrVersionCreated_ - For a node version, stores the creation date of that version.
 
 == Child nodes ==
 
@@ -320,11 +334,13 @@ import java.util.Date;
 import java.util.List;
 import org.jcrom.annotations.JcrChildNode;
 import org.jcrom.annotations.JcrName;
+import org.jcrom.annotations.JcrPath;
 import org.jcrom.annotations.JcrProperty;
 
 public class WeblogEntry {
 	
 	@JcrName private String name;
+	@JcrPath private String path;
 	@JcrProperty private String title;
 	@JcrProperty private String excerpt;
 	@JcrProperty private String body;
@@ -342,10 +358,12 @@ We have to make sure that classes marked as child nodes are correctly annotated 
 
 {{{
 import org.jcrom.annotations.JcrName;
+import org.jcrom.annotations.JcrPath;
 import org.jcrom.annotations.JcrProperty;
 
 public class Author {
 	@JcrName private String username;
+	@JcrPath private String path;
 	@JcrProperty private String firstName;
 	@JcrProperty private String lastName;
 	@JcrProperty private String emailAddress;
@@ -361,11 +379,13 @@ import java.util.Date;
 import java.util.List;
 import org.jcrom.annotations.JcrChildNode;
 import org.jcrom.annotations.JcrName;
+import org.jcrom.annotations.JcrPath;
 import org.jcrom.annotations.JcrProperty;
 
 public class WeblogEntry {
 	
 	@JcrName private String name;
+	@JcrPath private String path;
 	@JcrProperty private String title;
 	@JcrProperty private String excerpt;
 	@JcrProperty private String body;
@@ -385,11 +405,13 @@ And of course we would have to annotate the Comment class accordingly:
 {{{
 import java.util.Date;
 import org.jcrom.annotations.JcrName;
+import org.jcrom.annotations.JcrPath;
 import org.jcrom.annotations.JcrProperty;
 
 public class Comment {
 
 	@JcrName private String name;
+	@JcrPath private String path;
 	@JcrProperty private String title;
 	@JcrProperty private String body;
 	@JcrProperty private Date publishDate;
@@ -405,11 +427,13 @@ JCROM creates a container node for each child node. The name of this container n
 {{{
 import org.jcrom.annotations.JcrChildNode;
 import org.jcrom.annotations.JcrName;
+import org.jcrom.annotations.JcrPath;
 import org.jcrom.annotations.JcrProperty;
 
 public class MyClass {
 
     @JcrName private String name;
+    @JcrPath private String path;
     @JcrProperty(name = "my:singleValue") private int mySingleValue;
     @JcrChildNode(name = "my:child") private Child child;
 
@@ -426,7 +450,61 @@ To visualise how this container node mapping works, consider the following examp
 /Weblog/Hello_world/comments/Me_too
 }}}
 
-== Parent references ==
+== References ==
+
+JCROM supports JCR references using the @JcrReference annotation. For example, if we wanted to reference an Author from a WeblogEntry (instead of storing it as a child node), we would annotated as follows:
+
+{{{
+import java.util.Date;
+import java.util.List;
+import org.jcrom.annotations.JcrChildNode;
+import org.jcrom.annotations.JcrName;
+import org.jcrom.annotations.JcrPath;
+import org.jcrom.annotations.JcrProperty;
+import org.jcrom.annotations.JcrReference;
+
+public class WeblogEntry {
+	
+	@JcrName private String name;
+	@JcrPath private String path;
+	@JcrProperty private String title;
+	@JcrProperty private String excerpt;
+	@JcrProperty private String body;
+	@JcrProperty private Date publishDate;
+
+	@JcrProperty private List<String> tags;
+
+	@JcrChildNode private List<Comment> comments;
+
+	@JcrReference private Author author;	
+	...
+}
+}}} 
+
+A few things to mention about the reference support:
+
+  * The field type class of a reference field MUST have a @JcrUUID annotated field. In the above example, this means that the Author class must have a @JcrUUID field.
+  * When JCROM maps a node to an object, and a @JcrReference is found, then that referenced node will be loaded, and mapped to an object. In the above example, that means that when a WeblogEntry is loaded from a node, the author will also be loaded and mapped by JCROM automatically.
+  * When JCROM maps an object with a @JcrReference to a node, it does it in the following way:
+    # Retrieve the value of the @JcrUUID annotated field in the reference object.
+    # Use the UUID to load the node being referenced.
+    # Create a property referencing the loaded node.
+  * The filtering and max depth arguments in the Jcrom methods apply in same way to references as child nodes.
+
+Therefore, if we were creating a new WeblogEntry, it is enough for us to know the Author UUID:
+
+{{{
+...
+String authorUUID = ...;
+Author author = new Author();
+author.setUuid(authorUUID);
+
+WeblogEntry entry = new WeblogEntry();
+entry.setAuthor(author);
+...
+}}}
+
+== Parent nodes ==
 
 If a child object needs to reference a parent object, then we can use the @JcrParentNode annotation inside the child object. For example, if a Comment needs a reference to its parent WeblogEntry object:
 
@@ -434,12 +512,14 @@ If a child object needs to reference a parent object, then we can use the @JcrPa
 {{{
 import java.util.Date;
 import org.jcrom.annotations.JcrName;
+import org.jcrom.annotations.JcrPath;
 import org.jcrom.annotations.JcrParentNode;
 import org.jcrom.annotations.JcrProperty;
 
 public class Comment {
 
 	@JcrName private String name;
+	@JcrPath private String path;
 	@JcrProperty private String title;
 	@JcrProperty private String body;
 	@JcrProperty private Date publishDate;
@@ -458,11 +538,13 @@ JCROM offers a few different strategies when mapping binary/file content. You ca
 {{{
 import org.jcrom.annotations.JcrChildNode;
 import org.jcrom.annotations.JcrName;
+import org.jcrom.annotations.JcrPath;
 import org.jcrom.annotations.JcrProperty;
 
 public class MyClass {
 
     @JcrName private String name;
+    @JcrPath private String path;
     @JcrProperty private byte[] myImage;
 
     ...
@@ -478,11 +560,13 @@ import org.jcrom.JcrFile;
 import org.jcrom.annotations.JcrChildNode;
 import org.jcrom.annotations.JcrFileNode;
 import org.jcrom.annotations.JcrName;
+import org.jcrom.annotations.JcrPath;
 import org.jcrom.annotations.JcrProperty;
 
 public class WeblogEntry {
 	
 	@JcrName private String name;
+	@JcrPath private String path;
 	@JcrProperty private String title;
 	@JcrProperty private String excerpt;
 	@JcrProperty private String body;
@@ -799,7 +883,7 @@ As you can see, adding custom finder methods is really easy.
 
 = Using with Guice =
 
-Guice is a lightweight annotation-based injection framework from Google. It is easy to use JCROM with Guice, just instantiate Jcrom in your Guice module, and bind it there. For example:
+Guice is a lightweight annotation-based dependency injection framework from Google. It is easy to use JCROM with Guice, just instantiate Jcrom in your Guice module, and bind it there. For example:
 
 {{{
 import com.google.inject.AbstractModule;
@@ -821,3 +905,20 @@ public class MyGuiceModule extends AbstractModule {
 }}}
 
 And then you can inject Jcrom into your DAOs.
+
+= Using with Spring =
+
+Spring is a very popular dependency injection framework. It is easy to use JCROM with Spring, just construct a Jcrom instance with constructor based injection, supplying the classes to be mapped in the constructor. For example:
+
+{{{
+...
+  <bean id="jcrom" class="org.jcrom.Jcrom">
+    <constructor-arg type="java.util.Set">
+      <set>
+        <value type="java.lang.Class">com.mypackage.MyClass1</value>
+        <value type="java.lang.Class">com.mypackage.MyClass2</value>
+      </set>
+    </constructor-arg>
+  </bean>
+...
+}}}
