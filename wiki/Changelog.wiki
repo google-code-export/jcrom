@@ -2,7 +2,7 @@
 
 =Release 1.1 (23.02.2008)=
 
-Some bugfixes, but also enhancements such as support for references, and versioning support in the DAO classes.
+Some bugfixes, but also enhancements such as support for references, and versioning support in the DAO classes. There is a bit of broken backwards compatibility in the DAO classes: name-based methods are now path-based, and because of the removal of the static root path, the finder methods and the AbstractJcrDAO constructors have changed.
 
 Issues resolved: http://code.google.com/p/jcrom/issues/list?q=label%3AMilestone-Release1.1&can=1
 
