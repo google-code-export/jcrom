@@ -309,8 +309,8 @@ If we try to map a class with a @JcrProperty annotated field of type other than 
 
 We can map multi-valued properties in one of two ways: 
 
-# using an array of the property type
-# using a java.util.List, as long as the List is parameterized with one of the Java types in the table above. 
+ # using an array of the property type
+ # using a java.util.List, as long as the List is parameterized with one of the Java types in the table above. 
 
 For example, our WeblogEntry class might need a list of tags:
 
@@ -874,10 +874,10 @@ New in release 1.2 is the ability to determine the class of the object to instan
 
 To use this feature, you need to do the following:
 
-# Add a @JcrNode(classNameProperty="className") annotation to the interface.
-# Map the implementing classes (not the interface!) in JCROM.
-# Instantiate Jcrom with the dynamicInstantiation flag set to true.
-# Use Jcrom to map to/from the interface.
+ # Add a @JcrNode(classNameProperty="className") annotation to the interface.
+ # Map the implementing classes (not the interface!) in JCROM.
+ # Instantiate Jcrom with the dynamicInstantiation flag set to true.
+ # Use Jcrom to map to/from the interface.
 
 For example, let's say we have a Shape interface:
 
