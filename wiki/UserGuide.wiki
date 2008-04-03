@@ -1,4 +1,4 @@
-#summary The User Guide gives a brief description of JCROM to get you started. Written for version 1.1.
+#summary The User Guide gives a brief description of JCROM to get you started. Written for version 1.2.
 #labels Featured
 
 = What is JCROM? =
@@ -250,6 +250,40 @@ public class MyClass {
 }
 }}}
 
+You can also use the @JcrNode annotation to specify mixin types to use when mapping an object to a JCR node:
+
+{{{
+import org.jcrom.annotations.JcrName;
+import org.jcrom.annotations.JcrPath;
+import org.jcrom.annotations.JcrNode;
+
+@JcrNode(mixinTypes = {"mix:referenceable"})
+public class MyClass {
+	@JcrName private String name;
+	@JcrPath private String path;
+	...
+}
+}}}
+
+Note that mixinTypes takes an array, so you can specify multiple mixin types.
+
+Finally, you can use the @JcrNode annotation to store the full canonical name of the class being mapped in a JCR property. For example:
+
+{{{
+import org.jcrom.annotations.JcrName;
+import org.jcrom.annotations.JcrPath;
+import org.jcrom.annotations.JcrNode;
+
+@JcrNode(classNameProperty = "className")
+public class MyClass {
+	@JcrName private String name;
+	@JcrPath private String path;
+	...
+}
+}}}
+
+With the above annotation, JCROM would store the full name of the class in a property called "className" on the JCR node. This is important when using dynamic instantiation, which is described in a later section.
+
 == Properties ==
 
 We can map fields to JCR node properties. There are two categories of properties.
@@ -269,10 +303,16 @@ You can map your Java fields to custom JCR properties using the @JcrProperty ann
 || java.util.Date || DATE ||
 || java.util.Calendar || DATE ||
 || java.sql.Timestamp || DATE ||
+|| java.util.Locale || STRING ||
 
 If we try to map a class with a @JcrProperty annotated field of type other than the above, we will get an exception telling us that the type is invalid.
 
-We can map multi-valued properties using a java.util.List, as long as the List is parameterized with one of the Java types in the table above. For example, our WeblogEntry class might need a list of tags:
+We can map multi-valued properties in one of two ways: 
+
+# using an array of the property type
+# using a java.util.List, as long as the List is parameterized with one of the Java types in the table above. 
+
+For example, our WeblogEntry class might need a list of tags:
 
 {{{
 import java.util.Date;
@@ -449,6 +489,47 @@ To visualise how this container node mapping works, consider the following examp
 /Weblog/Hello_world/comments/I_like_your_post
 /Weblog/Hello_world/comments/Me_too
 }}}
+
+=== Maps as child nodes ===
+
+With release 1.2, JCROM supports java.util.Map as a child node. JCROM will create an nt:unstructured node for the Map, and store each name-value pair in the Map as a property on that node. The Map must be parameterized with keys as java.lang.String, and values as a valid property type (or an array of such). The following is therefore valid:
+
+{{{
+import java.util.Map;
+import org.jcrom.annotations.JcrChildNode;
+import org.jcrom.annotations.JcrName;
+import org.jcrom.annotations.JcrPath;
+
+public class MyClass {
+
+    @JcrName private String name;
+    @JcrPath private String path;
+    @JcrChildNode private Map<String,String> properties;
+
+    ...
+}
+}}}
+
+== Child objects as serialized properties ==
+
+With release 1.2, JCROM supports storing a child object as a serializes byte array. To do this, mark your field with @JcrSerializedProperty. The object type must implement java.io.Serializable. For example:
+
+{{{
+import org.jcrom.annotations.JcrName;
+import org.jcrom.annotations.JcrPath;
+import org.jcrom.annotations.JcrSerializedProperty;
+
+public class MyClass {
+
+    @JcrName private String name;
+    @JcrPath private String path;
+    @JcrSerializedProperty private MyChild child;
+
+    ...
+}
+}}}
+
+In the above case, JCROM will automatically serialize the child object, and store as a byte array in JCR. This of course works both ways, so when reading the object from JCR, JCROM will deserialize the byte array and add the resulting object to the child field.
 
 == References ==
 
