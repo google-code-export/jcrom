@@ -1003,7 +1003,7 @@ public class ShapeContainer extends AbstractJcrEntity {
 
 	@JcrChildNode private List<Shape> shapes;
 	
-	public ShapeParent() {
+	public ShapeContainer() {
 		super();
 		this.shapes = new ArrayList<Shape>();
 	}
