@@ -156,12 +156,13 @@ Jcrom jcrom = ...;
 Session session = ...;
 String username = ...;
 Contact contact = ...;
+String parentPath = "/Contacts"; // this parent node must exist
 
 ContactDAO contactDAO = new ContactDAO(session, jcrom);
-contactDAO.create(contact);
+contactDAO.create(parentPath, contact);
 
 Contact anotherContact = contactDAO.get(contact.getPath());
-List<Contact> allContacts = contactDAO.findAll("Contacts");
+List<Contact> allContacts = contactDAO.findAll(parentPath);
 }}}
 
 In a web application environment, we would probably inject the Session and the Jcrom instance into the DAO, and then inject the DAO into a controller, so the controller would never directly deal with Jcrom or the Session.
