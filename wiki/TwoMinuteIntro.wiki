@@ -144,7 +144,7 @@ import org.jcrom.dao.AbstractJcrDAO;
 public class ContactDAO extends AbstractJcrDAO<Contact> {
         
         public ContactDAO( Session session, Jcrom jcrom ) {
-                super(Contact.class, session, jcrom, new String[0]);
+                super(Contact.class, session, jcrom);
         }
 }
 }}}
