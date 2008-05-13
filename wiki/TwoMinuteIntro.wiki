@@ -136,7 +136,6 @@ try {
 Take advantage of the org.jcrom.dao.AbstractJcrDAO class to create DAO objects:
 
 {{{
-import javax.jcr.Node;
 import javax.jcr.Session;
 import org.jcrom.Jcrom;
 import org.jcrom.dao.AbstractJcrDAO;
