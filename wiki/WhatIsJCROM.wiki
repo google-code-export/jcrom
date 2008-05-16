@@ -1,4 +1,5 @@
 #summary Quick introduction to the concepts.
+#labels Phase-Implementation
 = What is JCROM? =
 
 JCROM is an acronym that stands for Java Content Repository Object Mapper. It is a simple and lightweight annotation-based framework for mapping plain old java objects (POJOs) to/from nodes in a Java Content Repository. Before you can appreciate what it does for you, it is important to understand what a Java Content Repository (JCR) is.
@@ -163,4 +164,4 @@ To use JCROM, you'll need the JCROM jar in your classpath. There are a few ways 
   }}}
   * Finally, you can check out from subversion and build it yourself. You will need [http://maven.apache.org Maven2] for this. After you've checked out the project, cd into the jcrom folder, and run "mvn install".
 
-Go [UserGuide back] to the overview, or move on to the [AnnotatingClasses next chapter].
+Go [UserGuide back] to the overview.
