@@ -8,4 +8,4 @@ JCROM 1.3 depends on the following third party JARs:
   * CGLIB, version 2.1_3 ([http://repo1.maven.org/maven2/cglib/cglib/2.1_3/cglib-2.1_3.jar get it here])
   * ASM, version 1.5.3 (CGLIB depends on this) ([http://repo1.maven.org/maven2/asm/asm/1.5.3/asm-1.5.3.jar get it here])
 
-If you use Maven2 to build your project, it will automatically download all dependencies for you.
+If you use [http://maven.apache.org Maven2] to build your project, it will automatically download all dependencies for you.
