@@ -1,4 +1,4 @@
-#summary The User Guide gives a brief description of JCROM to get you started. Written for version 1.2.
+#summary The User Guide gives a brief description of JCROM to get you started. Written for version 1.3.
 #labels Featured
 
 = What is JCROM? =
@@ -138,10 +138,11 @@ Pretty neat, huh? JCROM handles the mapping of nodes and child nodes, casting an
 
 To summarise:
   * annotation based (needs Java 1.5)
-  * lightweight, 32KB, only two external dependencies (JCR api and logging api)
+  * lightweight, minimal external [Dependencies dependencies]
   * simple to learn, easy to use (and test)
   * removes error prone boiler plate code
   * works with any JCR implementation
+  * works well with Guice and Spring
   * vision: do for JCR what Hibernate did for JDBC
 
 What JCROM does not do at the moment:
@@ -153,16 +154,16 @@ I find it easiest to explain by example. Therefore, this user guide is written m
 
 To use JCROM, you'll need the JCROM jar in your classpath. There are a few ways you can achieve this:
 
-  * Download it directly from http://jcrom.org (note that you will need to download the external dependencies as well)
+  * Download it directly from http://jcrom.org (note that you will need to download the external [Dependencies dependencies] as well)
   * If you use Maven2 to manage your project, you can reference JCROM as a dependency:
   {{{
   <dependency>
 	<groupId>org.jcrom</groupId>
 	<artifactId>jcrom</artifactId>
-	<version>1.1</version>
+	<version>1.3</version>
   </dependency>
   }}}
-  * Finally, you can check out from subversion and build it yourself. You will need Maven2 for this. After you've checked out the project, cd into the jcrom folder, and run "mvn install".
+  * Finally, you can check out from subversion and build it yourself. You will need [http://maven.apache.org Maven2] for this. After you've checked out the project, cd into the jcrom folder, and run "mvn install".
 
 = Annotating your Java classes =
 
