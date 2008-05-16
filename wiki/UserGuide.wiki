@@ -1,6 +1,11 @@
 #summary The User Guide gives a brief description of JCROM to get you started. Written for version 1.3.
 #labels Featured
 
+= User Guide =
+
+ * [WhatIsJCROM What is JCROM?]
+ * [AnnotatingClasses Annotating your Java classes]
+
 = What is JCROM? =
 
 JCROM is an acronym that stands for Java Content Repository Object Mapper. It is a simple and lightweight annotation-based framework for mapping plain old java objects (POJOs) to/from nodes in a Java Content Repository. Before you can appreciate what it does for you, it is important to understand what a Java Content Repository (JCR) is.
