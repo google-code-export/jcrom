@@ -1,4 +1,5 @@
 #summary Describes how to annotate and map files.
+#labels Phase-Implementation
 == Files ==
 
 JCROM offers a few different strategies when mapping binary/file content. You can do this directly using a byte[] or java.io.InputStream field:
