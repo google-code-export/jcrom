@@ -3,7 +3,16 @@
 
 == References ==
 
-JCROM supports JCR references using the @JcrReference annotation. For example, if we wanted to reference an Author from a WeblogEntry (instead of storing it as a child node), we would annotated as follows:
+JCROM supports JCR references using the @JcrReference annotation. Both single references and list of references is supported:
+
+{{{
+...
+    @JcrReference MyClass singleReference;
+    @JcrReference List<MyClass> multipleReferences;
+...
+}}}
+
+For example, if we wanted to reference an Author from a WeblogEntry (instead of storing it as a child node), we would annotate as follows:
 
 {{{
 import java.util.Date;
