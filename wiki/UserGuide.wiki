@@ -12,6 +12,7 @@
   * [References References]
   * [ParentNodes Parent nodes]
   * [Files Files]
+  * [LazyLoading Lazy loading]
  * [MappingObjects Mapping objects to/from JCR]
   * [UsingFilters Using filters]
   * [DynamicInstantiation Programming to interfaces: Dynamic instantiation]
