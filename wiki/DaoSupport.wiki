@@ -100,3 +100,39 @@ try {
     session.logout();
 }
 }}}
+
+== Custom session management ==
+
+In some cases, when using a dependency injection framework (like Guice or Spring) to manage your DAOs, you don't want to inject the Session via the constructor. 
+
+For custom session management in your DAO, you just do the following:
+
+ * Provide no session to the AbstractJcrDAO constructor (use [http://jcrom.googlecode.com/svn/trunk/jcrom/apidocs/org/jcrom/dao/AbstractJcrDAO.html#AbstractJcrDAO(java.lang.Class,%20org.jcrom.Jcrom) this constructor])
+ * Override the getSession() method to provide your own Session.
+
+For example, if you want to use a Guice provider for your session, you could do:
+
+{{{
+import com.google.inject.Inject;
+import com.google.inject.Provider;
+import javax.jcr.Session;
+import org.jcrom.Jcrom;
+import org.jcrom.dao.AbstractJcrDAO;
+import my.User;
+
+class UserJcrDAO extends AbstractJcrDAO<User> {
+
+    private final Provider<Session> sessions;
+    
+    @Inject
+    UserJcrDAO( Jcrom jcrom, Provider<Session> sessions ) {
+        super(User.class, jcrom);
+        this.sessions = sessions;
+    }
+
+    @Override
+    protected Session getSession() {
+        return sessions.get();
+    }
+}
+}}}
