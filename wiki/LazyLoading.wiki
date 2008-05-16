@@ -19,7 +19,9 @@ For files:
 
 And similarly for references:
 
+{{{
 @JcrReference(lazy=true)
+}}}
 
 Note that this applies both to single children/files/references and lists of
 children/files/references.
