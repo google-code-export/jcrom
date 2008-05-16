@@ -1,0 +1,19 @@
+#summary Using JCROM with Spring.
+#labels Phase-Implementation
+
+= Using with Spring =
+
+Spring is a very popular dependency injection framework. It is easy to use JCROM with Spring, just construct a Jcrom instance with constructor based injection, supplying the classes to be mapped in the constructor. For example:
+
+{{{
+...
+  <bean id="jcrom" class="org.jcrom.Jcrom">
+    <constructor-arg type="java.util.Set">
+      <set>
+        <value type="java.lang.Class">com.mypackage.MyClass1</value>
+        <value type="java.lang.Class">com.mypackage.MyClass2</value>
+      </set>
+    </constructor-arg>
+  </bean>
+...
+}}}
