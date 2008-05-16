@@ -125,23 +125,3 @@ To visualise how this container node mapping works, consider the following examp
 /Weblog/Hello_world/comments/I_like_your_post
 /Weblog/Hello_world/comments/Me_too
 }}}
-
-=== Maps as child nodes ===
-
-With release 1.2, JCROM supports java.util.Map as a child node. JCROM will create an nt:unstructured node for the Map, and store each name-value pair in the Map as a property on that node. The Map must be parameterized with keys as java.lang.String, and values as a valid property type (or an array of such). The following is therefore valid:
-
-{{{
-import java.util.Map;
-import org.jcrom.annotations.JcrChildNode;
-import org.jcrom.annotations.JcrName;
-import org.jcrom.annotations.JcrPath;
-
-public class MyClass {
-
-    @JcrName private String name;
-    @JcrPath private String path;
-    @JcrChildNode private Map<String,String> properties;
-
-    ...
-}
-}}}
