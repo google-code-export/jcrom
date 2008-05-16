@@ -5,66 +5,7 @@
 
 It is often wise to abstract the underlying persistence strategy away from the calling code, by encapsulating the persistence calls within Data Access Objects (DAOs). That means that your controller (or action) classes can have a DAO object injected, and use it, without having to worry whether the object is being persisted to a database, XML, or JCR. Also, session management can be kept outside the scope of controllers.
 
-JCROM supports this methodology by providing a DAO interface, and an abstract DAO implementation that uses JCROM to map objects to/from JCR. The JcrDAO interface looks like this (refer to the javadoc for method documentation):
-
-{{{
-package org.jcrom.dao;
-
-import java.util.List;
-import javax.jcr.Node;
-
-public interface JcrDAO<T> {
-
-	public Node create( T entity ) throws Exception;
-	
-	public String update( T entity ) throws Exception;
-	public String update( T entity, String childNameFilter, int maxDepth ) throws Exception;
-	public String updateByUUID( T entity, String uuid ) throws Exception;
-	public String updateByUUID( T entity, String uuid, String childNameFilter, int maxDepth ) throws Exception;
-		
-	public void delete( String path ) throws Exception;
-	public void deleteByUUID( String uuid ) throws Exception;
-
-	public boolean exists( String path ) throws Exception;
-
-	public T get( String path ) throws Exception;
-	public T get( String path, String childNodeFilter, int maxDepth ) throws Exception;
-	
-	public T loadByUUID( String uuid ) throws Exception;
-	public T loadByUUID( String uuid, String childNodeFilter, int maxDepth ) throws Exception;
-	
-	public List<T> getVersionList( String path ) throws Exception;
-	public List<T> getVersionList( String path, String childNameFilter, int maxDepth ) throws Exception;
-	public List<T> getVersionList( String path, String childNameFilter, int maxDepth, long startIndex, long resultSize ) throws Exception;
-	
-	public List<T> getVersionListByUUID( String uuid ) throws Exception;
-	public List<T> getVersionListByUUID( String uuid, String childNameFilter, int maxDepth ) throws Exception;
-	public List<T> getVersionListByUUID( String uuid, String childNameFilter, int maxDepth, long startIndex, long resultSize ) throws Exception;
-	
-	public long getVersionSize( String path ) throws Exception;
-	public long getVersionSizeByUUID( String uuid ) throws Exception;
-	
-	public T getVersion( String path, String versionName ) throws Exception;
-	public T getVersion( String path, String versionName, String childNodeFilter, int maxDepth ) throws Exception;
-	
-	public T getVersionByUUID( String uuid, String versionName ) throws Exception;
-	public T getVersionByUUID( String uuid, String versionName, String childNodeFilter, int maxDepth ) throws Exception;
-	
-	public void restoreVersion( String path, String versionName ) throws Exception;
-	public void restoreVersionByUUID( String uuid, String versionName ) throws Exception;
-	
-	public void removeVersion( String path, String versionName ) throws Exception;
-	public void removeVersionByUUID( String uuid, String versionName ) throws Exception;
-	
-	public long getSize( String rootPath ) throws Exception;
-	
-	public List<T> findAll( String rootPath ) throws Exception;
-	public List<T> findAll( String rootPath, long startIndex, long resultSize ) throws Exception;
-	public List<T> findAll( String rootPath, String childNameFilter, int maxDepth ) throws Exception;
-	public List<T> findAll( String rootPath, String childNameFilter, int maxDepth, long startIndex, long resultSize ) throws Exception;
-
-}
-}}}
+JCROM supports this methodology by providing a DAO interface, and an abstract DAO implementation that uses JCROM to map objects to/from JCR. Look at the [http://jcrom.googlecode.com/svn/trunk/jcrom/apidocs/org/jcrom/dao/JcrDAO.html javadoc for JcrDAO] to see which methods are implemented.
 
 JCROM offers an abstract implementation of this interface, AbstractJcrDAO, that implements all the methods (you can extend and add custom finder methods). Note that the finder methods can accept startIndex and resultSize arguments - this is useful when paginating over large result sets.
 
@@ -77,16 +18,16 @@ import org.jcrom.Jcrom;
 import org.jcrom.dao.AbstractJcrDAO;
 
 public class WeblogEntryDAO extends AbstractJcrDAO<WeblogEntry> {
-
-	private static final String[] MIXIN_TYPES = {"mix:referenceable"};
 	
 	public WeblogEntryDAO( Session session, Jcrom jcrom ) {
-		super(WeblogEntry.class, session, jcrom, MIXIN_TYPES);
+		super(WeblogEntry.class, session, jcrom);
 	}
 }
 }}}
 
-Since all the methods are implemented for us, the only thing we need to do is implement a constructor. The constructor passes information on to the AbstractJcrDAO superclass (refer to the javadoc for description of the arguments). Now, we can use this class to persist and load weblog entries:
+Note that AbstractJcrDAO uses generics to define a parameter class. This means you don't have to do any casting when using the DAO methods.
+
+Since all the methods are implemented for us, the only thing we need to do is implement a constructor. The constructor passes information on to the AbstractJcrDAO superclass (there are a few different constructors, refer to the javadoc for description of the arguments). Now, we can use this class to persist and load weblog entries:
 
 {{{
 Jcrom jcrom = ...;
@@ -105,9 +46,9 @@ try {
 }
 }}}
 
-In a web application environment, we would probably inject the Session and the Jcrom instance into the DAO, and then inject the DAO into a controller, so the controller would never directly deal with Jcrom or the Session.
+In a web application environment, we would probably use a dependency injection framework (like Guice or Spring) to inject the Session and the Jcrom instance into the DAO, and then inject the DAO into a controller, so the controller would never directly deal with Jcrom or the Session.
 
-I highly recommend using this approach, as it keeps your code tidy.
+I highly recommend using this approach, as it keeps your code very tidy and less error prone.
 
 == Custom finder methods ==
 
@@ -116,10 +57,12 @@ Although the abstract DAO implementation has findAll() methods, we sometimes nee
 So, if we wanted to create a finder method that returns all posts where the title starts with a particular String, we could add the following method to the WeblogEntryDAO:
 
 {{{
+...
 public List<WeblogEntry> findByStartChars( String chars ) throws Exception {
     return super.findByXPath("/jcr:root/" 
         + ROOT_PATH + "/*[jcr:like(@title, '" + chars + "%')]", "*", -1);
 }
+...
 }}}
 
 As you can see, adding custom finder methods is really easy.
