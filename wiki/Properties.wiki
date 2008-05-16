@@ -1,11 +1,11 @@
 #summary Describes how to annotate properties.
 #labels Phase-Implementation
 
-== Properties ==
+= Properties =
 
 We can map fields to JCR node properties. There are two categories of properties.
 
-=== Custom properties ===
+== Custom properties ==
 
 You can map your Java fields to custom JCR properties using the @JcrProperty annotation. The following table shows which field types are valid for @JcrProperty annotation, and what JCR type they are mapped to:
 
@@ -21,6 +21,7 @@ You can map your Java fields to custom JCR properties using the @JcrProperty ann
 || java.util.Calendar || DATE ||
 || java.sql.Timestamp || DATE ||
 || java.util.Locale || STRING ||
+|| enum || STRING ||
 
 If we try to map a class with a @JcrProperty annotated field of type other than the above, we will get an exception telling us that the type is invalid.
 
@@ -70,7 +71,21 @@ public class MyClass {
 }
 }}}
 
-=== Named read-only JCR properties ===
+=== Enum properties ===
+
+JCROM supports mapping enums in the following way:
+
+{{{
+...
+    public enum Suit { CLUBS, DIAMONDS, HEARTS, SPADES }
+    
+    @JcrProperty private Suit suit;
+    @JcrProperty private Suit[] suitAsArray;
+    @JcrProperty private List<Suit> suitAsList;
+...
+}}}
+
+== Named read-only JCR properties ==
 
 Depending on the node types and/or mixin types you use when mapping a Java object to JCR, the JCR will create default properties. JCROM provides a set of annotations to map to those read-only properties. This is useful if you want to use these properties in your Java code:
 
