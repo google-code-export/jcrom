@@ -1,7 +1,7 @@
 #summary Describes how to annotate references.
 #labels Phase-Implementation
 
-== References ==
+= References =
 
 JCROM supports JCR references using the @JcrReference annotation. Both single references and list of references is supported:
 
@@ -63,3 +63,17 @@ WeblogEntry entry = new WeblogEntry();
 entry.setAuthor(author);
 ...
 }}}
+
+== Loading references by path ==
+
+Since release 1.3, JCROM also supports managing references by path rather than UUID. This is done by setting byPath to true:
+
+{{{
+    @JcrReference(byPath=true) private Author author;
+}}}
+
+This works similarly to the UUID references, but you use path in all cases where you would have used UUID, and the referenced object does not have to be mix:referenceable.
+
+This is supported to allow for weak references, as described in [http://wiki.apache.org/jackrabbit/DavidsModel#head-ed794ec9f4f716b3e53548be6dd91b23e5dd3f3a David's Model].
+
+This means that you can delete the referenced object without worrying about references. In the case that JCROM does not find an object at the path referenced, it simply ignores it.
