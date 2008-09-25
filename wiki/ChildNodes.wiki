@@ -130,11 +130,13 @@ In some cases, where you have a one-to-one mapping to the child node, creating a
 
 For example, you could have a User object with an Address object like this:
 
+{{{
 public class User {
 ...
    @JcrChildNode(createContainerNode=false) Address address;
 ...
 }
+}}}
 
 This is a perfect example, since it does not make sense to give a name to the
 address. The path to the Address could map to something like /Users/ogg/address.
