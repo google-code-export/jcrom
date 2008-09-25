@@ -125,3 +125,19 @@ To visualise how this container node mapping works, consider the following examp
 /Weblog/Hello_world/comments/I_like_your_post
 /Weblog/Hello_world/comments/Me_too
 }}}
+
+In some cases, where you have a one-to-one mapping to the child node, creating a child container node is unnecessary. In such cases, we can use the "createContainerNode" property of @JcrChildNode. If this is set to false (defaults to true), then a container node will not be created for the child node. This also means that the name of the object will be ignored, and the field name (or the name specified in @JcrChildNode) will be used instead.
+
+For example, you could have a User object with an Address object like this:
+
+public class User {
+...
+   @JcrChildNode(createContainerNode=false) Address address;
+...
+}
+
+This is a perfect example, since it does not make sense to give a name to the
+address. The path to the Address could map to something like /Users/ogg/address.
+
+Note that this will only work for single child nodes, not Lists or Maps, for reasons
+that are hopefully obvious.
