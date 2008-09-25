@@ -3,9 +3,11 @@
 
 == Using filters ==
 
-There are times when you don't want to load/update some/any child nodes. For example, we may want to list all the weblog entries, but without loading the comments for each entry. JCROM supports this with two parameters that can be used in the Jcrom.fromNode() and Jcrom.updateNode() methods:
+There are times when you don't want to load/update some/any child nodes or references. For example, we may want to list all the weblog entries, but without loading the comments for each entry. JCROM supports this with a NodeFilter parameter that can be used in the Jcrom.fromNode() and Jcrom.updateNode() methods.
 
-  * _childNameFilter_ - this is a comma separated string with the names of children to include or exclude.
+The NodeFilter constructor takes three arguments:
+
+  * _fieldNameFilter_ - this is a comma separated string with the names of children to include or exclude.
 
     * "comments" will include only the comments children
     * "-comments" will include everything but the comments children
@@ -13,6 +15,8 @@ There are times when you don't want to load/update some/any child nodes. For exa
     * "none" will exclude all children
 
   * _maxDepth_ - the maximum depth of included child nodes (0 means no child nodes are loaded, while a negative value means that no restrictions are set on the depth).
+
+  * _filterDepth_ - the depth down to which the filter applies. If we are deeper than this, then the filter will be ignored. This is useful for example when you want to filter immediate children, but then load everything below unfiltered.
 
 So, to load a weblog entry without the comments, we would do:
 
@@ -23,11 +27,14 @@ String weblogEntryName = ...;
 try {
     Node weblogEntryNode = session.getRootNode()
         .getNode("Weblog").getNode(weblogEntryName);
+    NodeFilter nodeFilter = new NodeFilter("-comments", NodeFilter.DEPTH_INFINITE);
     WeblogEntry weblogEntry 
-        = jcrom.fromNode(WeblogEntry.class, weblogEntryNode, "-comments", -1);
+        = jcrom.fromNode(WeblogEntry.class, weblogEntryNode, nodeFilter);
 } finally {
     session.logout();
 }
 }}}
 
 In much the same way, sometimes we do not want to update the child nodes when updating a parent. For example, if we need to update the body property of the WeblogEntry, then there is no need to update all the comment child nodes. Therefore, the Jcrom.updateNode() methods accept the filter arguments as well.
+
+Note that the field name filter will not only apply to immediate children, but down the whole tree.
