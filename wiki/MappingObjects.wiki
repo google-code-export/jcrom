@@ -19,6 +19,17 @@ jcrom.map(WeblogEntry.class);
 
 Each class that you map will be validated, and a JcrMappinException will be thrown if the class is not valid for mapping. All child classes will be detected, validated, and mapped automatically. Therefore it is no need to map the Comment or Author classes above, since they are referenced as children from the WeblogEntry class.
 
+You can also tell Jcrom to scan a package, and map all classes found in that package:
+
+{{{
+...
+jcrom.mapPackage("my.package.with.only.jcr.entities");
+jcrom.mapPackage("my.mixed.package", true);
+...
+}}}
+
+The mapPackage() method optionally takes a second argument, a boolean that specifies whether to ignore invalid classes. This is useful if the package contains some classes that should not be mapped.
+
 == Mapping an object to a JCR node ==
 
 Let's say we have an instance of a Java object, and want to map it to a JCR node. We can choose to either create a new node for our object, or update an existing one. The decision is left to the user, JCROM does not try to determine whether to add a node or update.
