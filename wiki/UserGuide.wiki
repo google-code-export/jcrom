@@ -1,4 +1,4 @@
-#summary The User Guide gives a brief description of JCROM to get you started. Written for version 1.3.1.
+#summary The User Guide gives a brief description of JCROM to get you started. Written for version 1.3.2.
 #labels Featured,Phase-Implementation
 
 = User Guide =
