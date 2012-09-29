@@ -24,7 +24,7 @@ Spring is a very popular dependency injection framework. It is easy to use JCROM
 
 You could use [http://se-jcr.sourceforge.net/guide.html Spring Extension JCR] with JCROM.
 
-*Note:* SE-JCR [https://jira.springsource.org/browse/SEJCR-21 does not support JCR 2.0]. But [https://github.com/jbellmann Jörg Bellmann] did a great job to use JCR 2.0 with se-jcr. You can find the fork [https://github.com/jbellmann/jcr-springextension here].
+*Note:* SE-JCR [https://jira.springsource.org/browse/SEJCR-21 does not support JCR 2.0]. But [https://github.com/jbellmann JÃ¶rg Bellmann] did a great job to use JCR 2.0 with se-jcr. You can find the fork [https://github.com/jbellmann/jcr-springextension here].
 
 Firstly, create the following class to manage SessionFactory for se-jcr and JCROM:
 
