@@ -89,7 +89,8 @@ JCROM supports mapping enums in the following way:
 
 Depending on the node types and/or mixin types you use when mapping a Java object to JCR, the JCR will create default properties. JCROM provides a set of annotations to map to those read-only properties. This is useful if you want to use these properties in your Java code:
 
-  * _@JcrUUID_ - If the node has a generated UUID stored in a jcr:uuid property (e.g. it is of the mixin type mix:referenceable), then that value will be read into the field annotated with this annotation. This must be a String field.
+  * _@JcrUUID_ - If the node has a generated UUID stored in a jcr:uuid property (e.g. it is of the mixin type mix:referenceable), then that value will be read into the field annotated with this annotation. This must be a String field. <br/>*Deprecated as of JCR 2.0*, @JcrIdentifier should be used instead. 
+  * _@JcrIdentifier_ - If the node has a generated Identifier stored in a jcr:identifier property (e.g. it is of the mixin type mix:referenceable), then that value will be read into the field annotated with this annotation. This must be a String field. *Since release 2.0*
   * _@JcrCreated_ - If the node has a creation date stored in a jcr:created property (e.g. it is of a type that extends nt:hierarchyNode), then that value will be read into the field annotated with this annotation.
   * _@JcrCheckedout_ - For a versioned node, stores whether the node is checked out. Must be on a boolean field.
   * _@JcrBaseVersionName_ - For a versioned node, stores the name of the base version.

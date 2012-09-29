@@ -1,3 +1,4 @@
+
 #summary Describes the DAO support classes.
 #labels Phase-Implementation
 
@@ -52,7 +53,7 @@ I highly recommend using this approach, as it keeps your code very tidy and less
 
 == Custom finder methods ==
 
-Although the abstract DAO implementation has findAll() methods, we sometimes need custom finder methods to filter the data and apply custom sorting. The AbstractJcrDAO class provides a set of protected methods to make custom finder methods easier to create.
+Although the abstract DAO implementation has findAll() methods, we sometimes need custom finder methods to filter the data and apply custom sorting. The AbstractJcrDAO class provides a set of protected methods to make custom finder methods easier to create (findByXPath(...), findBySql(...), findByQOM(...), ...).
 
 So, if we wanted to create a finder method that returns all posts where the title starts with a particular String, we could add the following method to the WeblogEntryDAO:
 
@@ -134,5 +135,89 @@ class UserJcrDAO extends AbstractJcrDAO<User> {
     protected Session getSession() {
         return sessions.get();
     }
+}
+}}}
+
+For example, if you want to use a Spring JCR [http://se-jcr.sourceforge.net/guide.html SessionFactory], you could use the following AbstractGenericJcrDAO class :
+
+{{{
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+
+import org.jcrom.Jcrom;
+import org.jcrom.dao.AbstractJcrDAO;
+import org.springframework.extensions.jcr.SessionFactory;
+import org.springframework.extensions.jcr.SessionFactoryUtils;
+
+public abstract class AbstractGenericJcrDAO<T> extends AbstractJcrDAO<T> implements GenericJcrDAO<T> {
+
+    private SessionFactory jcrSessionFactory;
+
+    public AbstractGenericJcrDAO(SessionFactory jcrSessionFactory, Jcrom jcrom) throws RepositoryException {
+        super(jcrom);
+        this.jcrSessionFactory = jcrSessionFactory;
+    }
+
+    @Override
+    protected Session getSession() {
+        if (jcrSessionFactory != null) {
+            return SessionFactoryUtils.getSession(this.jcrSessionFactory, true);
+        } else {
+            return super.getSession();
+        }
+    }
+
+    public final SessionFactory getSessionFactory() {
+        return jcrSessionFactory;
+    }
+
+    public void setJcrSessionFactory(SessionFactory jcrSessionFactory) {
+        this.jcrSessionFactory = jcrSessionFactory;
+    }
+
+}
+
+-----------------------------------------------------------------------------------------
+
+import org.jcrom.dao.JcrDAO;
+
+public interface GenericJcrDAO<T> extends JcrDAO<T> {
+
+}
+}}}
+
+{{{
+import java.util.List;
+
+import org.jcrom.Jcrom;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import my.JcrUser;
+
+@Repository
+public class JcrUserDaoImpl extends AbstractGenericJcrDAO<JcrUser> implements JcrUserDao {
+
+    @Autowired
+    public JcrUserDaoImpl(Jcrom jcrom, SessionFactory jcrSessionFactory) throws RepositoryException {
+        super(jcrSessionFactory, jcrom);
+    }
+
+    @Override
+    public JcrUser findByUsername(String username) {
+        List<JcrUser> list = super.findByXPath("/jcr:root/*[@title = '" + username + "']", "*", -1);
+        return list != null && !list.isEmpty() ? list.get(0) : null;
+    }
+
+}
+
+-----------------------------------------------------------------------------------------
+
+import my.JcrUser;
+
+public interface JcrUserDao extends GenericJcrDAO<JcrUser> {
+
+    JcrUser findByUsername(String username);
+
 }
 }}}

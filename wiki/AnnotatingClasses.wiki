@@ -15,6 +15,10 @@ public class WeblogEntry {
 	private String body;
 	private Date publishDate;
 	
+	/** Default Constructor */
+	public WeblogEntry() {
+	}
+
 	// ... getters and setters
 }
 }}}
@@ -36,6 +40,10 @@ public class WeblogEntry {
 	@JcrProperty private String body;
 	@JcrProperty private Date publishDate;
 	
+	/** Default Constructor */
+	public WeblogEntry() {
+	}
+
 	public void setTitle( String title ) {
 		this.title = title;
 		this.name = title;
@@ -62,8 +70,28 @@ In general, to annotate your object for JCROM, you do the following:
   # Annotate file objects with @JcrFileNode.
   # Annotate files for storing read-only JCR information with @JcrUUID, @JcrCreated.
 
-I'll now describe these steps in more detail.
+== List of annotations ==
 
-Note:
+|| *Annotation*  || *Description* ||
+|| @JcrName      || This annotation is used to mark a field that contains the JCR node name. *Mandatory* ||
+|| @JcrPath      || This annotation is used to mark a field that should store a JCR path read from a node. *Mandatory* ||
+|| @JcrNode      || This annotation is applied to types (classes or interfaces) that implement JcrEntity, and provides the ability to specify what JCR node type to use when creating a JCR node from the object being mapped, mixin types, and more. ||
+|| @JcrProperty  || This annotation is used mark fields that should be mapped to JCR node properties. ||
+|| @JcrUUID     ||  This annotation is used to mark a field that should store a JCR UUID read from a node. If the node does not have such a UUID, then the field will be left empty.<br/>*Deprecated as of JCR 2.0*, @JcrIdentifier should be used instead. ||
+|| @JcrIdentifier|| This annotation is used to mark a field that should store a JCR Identifier read from a node. If the node does not have such a Identifier, then the field will be left empty.<br/>*Since release 2.0*. ||
+|| @JcrChildNode || This annotation is used to mark fields that are to be mapped as JCR child nodes. It can be applied to fields whos type has been mapped to Jcrom, or to a java.util.List that is parameterized with a mapped implementation.<br/>Note that JCROM creates a container node for all child nodes. The child node is then created with the name retrieved via calling JcrEntity.getName() on the child object. ||
+|| @JcrParentNode|| This annotation is added to fields that implement JcrEntity, and are a reference to a parent object. Such fields are ignored when mapping to a JCR node, but when loading an object from a node, then field annotated with @JcrParentNode will be populated with the mapped parent object (if it was mapped). ||
+|| @JcrFileNode  || This annotation is used to mark fields that are to be mapped as JCR file nodes. It can be applied to fields whos type is a JcrFile (or extension of that), or to a java.util.List that is parameterized with a JcrFile (or extension).<br/>Note that JCROM creates a container node for all file nodes. The file node is then created with the name retrieved via calling JcrEntity.getName() on the child object. ||
+|| @JcrCreated   || This annotation is used to mark a field that should store a JCR creation date read from a node. If the node does not have a creation date, then the field will be left empty. The jcr:created property is inherited from the nt:hierarchyNode, so unless your node type extends that type there is little use of using this annotation. ||
+|| @JcrBaseVersionCreated ||This annotation is used to mark a field that should store a JCR base version creation date read from the node.<br/>Note: this will only be relevant for nodes that use the {{{mix:versionable}}} mixin type. Also note that this will be empty when iterating over older versions.||
+|| @JcrBaseVersionName || This annotation is used to mark a field that should store a JCR base version name read from the node.<br/>Note: this will only be relevant for nodes that use the {{{mix:versionable}}} mixin type. Also note that this will be empty when iterating over older versions. ||
+|| @JcrVersionCreated|| This annotation is used to mark a field that should store a JCR version creation date read from the node.<br/>Note: this will only be relevant for nodes that use the {{{mix:versionable}}} mixin type. Also note that this will be empty unless iterating over older versions. ||
+|| @JcrVersionName|| This annotation is used to mark a field that should store a JCR version name read from the node.<br/>Note: this will only be relevant for nodes that use the {{{mix:versionable}}} mixin type. Also note that this will be empty unless iterating over older versions. ||
+|| @JcrReference || This annotation is used to mark fields that are to be mapped as JCR reference properties. ||
+|| @JcrCheckedout|| This annotation is used to mark a field that should store whether a JCR node is checked out.<br/>Note: this will only be relevant for nodes that use the mix:versionable mixin type. ||
+|| @JcrSerializedProperty|| This annotation is used mark fields that should be serialized to a byte array and then mapped to JCR node property. ||
+
+== Notes ==
+  * JCROM uses reflection to mapping Java classes. It must Always define the default constructor.
   * JCROM uses field level annotation, not method level. The fields can be private. Therefore there is no requirement for getter and setter methods.
   * JCROM handles inheritance, so annotations from superclasses are automatically detected.

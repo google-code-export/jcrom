@@ -67,9 +67,14 @@ public interface JcrDataProvider {
 	public enum TYPE {FILE, BYTES, STREAM}
 	
 	public TYPE getType();
+	public boolean isFile();
+	public boolean isBytes();
+	public boolean isStream();
 	public File getFile();
 	public byte[] getBytes();
 	public InputStream getInputStream();
+	public void writeToFile(File file) throws IOException;
+	public long getContentLength();
 }
 }}}
 
@@ -88,13 +93,13 @@ JcrFile image = new JcrFile();
 image.setName(imageName);
 image.setMimeType(imageMimeType);
 image.setLastModified(imageLastModified);
-image.setDataProvider( new JcrDataProviderImpl(JcrDataProvider.TYPE.STREAM, imageStream) );
+image.setDataProvider( new JcrDataProviderImpl(imageStream) );
 
 weblogEntry.setImage(image);
 ...
 }}}
 
-JcrFile has static methods that can reduce the lines of code you write. For example, to create a JcrFile instance that has a data provider using a java.io.File, you can simply do:
+JcrDataUtils (before release 2.0, static methods in JcrFile) has static methods that can reduce the lines of code you write. For example, to create a JcrFile instance that has a data provider using a `java.io.File`, you can simply do:
 
 {{{
 String imageName = ...;
@@ -102,6 +107,32 @@ String imageMimeType = ...;
 File imageFile = ...;
 
 JcrFile jcrFile = JcrFile.fromFile(imageName, imageFile, imageMimeType);
+}}}
+
+Since release 2.0, new static methods were added in JcrDataUtils :
+
+{{{
+public static JcrFile fromFile(String name, File file) // Detects the mime type with Apache Tika library
+
+public static JcrFile fromFile(String name, File file, String mimeType, String encoding)
+
+public static JcrFile fromInputStream(String name, InputStream input) // Detects the mime type with Apache Tika library
+
+public static JcrFile fromInputStream(String name, InputStream input, String mimeType)
+
+public static JcrFile fromInputStream(String name, InputStream input, String mimeType, String encoding)
+
+public static JcrFile fromByteArray(String name, byte[] bytes) // Detects the mime type with Apache Tika library
+
+public static JcrFile fromByteArray(String name, byte[] bytes, String mimeType)
+
+public static JcrFile fromByteArray(String name, byte[] bytes, String mimeType, String encoding)
+
+public static String toString(JcrDataProvider dataProvider, String encoding) // Converts JcrDataProvider content to String
+
+public static byte[] toByteArray(JcrDataProvider dataProvider) // Converts JcrDataProvider content to byte[]
+
+public static InputStream toStream(JcrDataProvider dataProvider) // Converts JcrDataProvider content to InputStream
 }}}
 
 If you have more complex requirements for accessing the file content when mapping to JCR, you can create your own implementation of JcrDataProvider, and add that to your JcrFile instance.
@@ -127,6 +158,6 @@ public class Image extends JcrFile {
 
 Note that we have to specify the nt:unstructured node type. The reason for this is that JcrFile will automatically map to the nt:file node type, but that node type does not allow our photographer property. Therefore we have specified the nt:unstructured node type. A better solution would be to create our own node type that would be a sub-type of nt:file, with our custom metadata properties specified, and use that for the mapping.
 
-JCROM supports updating metdata only on file nodes. For example, you may just want to update the name of the photographer, leaving the file itself intact. To do this, just make sure that the data provider on JcrFile is null.
+JCROM supports updating metdata only on file nodes. For example, you may just want to update the name of the photographer, leaving the file itself intact. To do this, just make sure that the data provider on JcrFile is *`null`*.
 
-JCROM supports mapping a list of JcrFile nodes, using a java.util.List (much in the same way as for properties and children).
+JCROM supports mapping a list of JcrFile nodes, using a `java.util.List` (much in the same way as for properties and children).

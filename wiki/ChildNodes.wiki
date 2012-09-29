@@ -26,6 +26,10 @@ public class WeblogEntry {
 
 	@JcrChildNode private Author author;
 	
+	/** Default Constructor */
+	public WeblogEntry() {
+	}
+	
 	...
 }
 }}}
@@ -43,12 +47,16 @@ public class Author {
 	@JcrProperty private String firstName;
 	@JcrProperty private String lastName;
 	@JcrProperty private String emailAddress;
+	
+	/** Default Constructor */
+	public Author() {
+	}
 }
 }}}
 
 In a production environment, we would probably reference the author rather than including it, but this will do fine for demonstration purposes.
 
-JCROM also supports mapping a list of children. This must be done using a java.util.List parameterized with the annotated child class. For example, our WeblogEntry class might need a list of comments. We would add this in the following way:
+JCROM also supports mapping a list of children. This must be done using a {{{java.util.List}}} parameterized with the annotated child class. For example, our WeblogEntry class might need a list of comments. We would add this in the following way:
 
 {{{
 import java.util.Date;
@@ -72,6 +80,10 @@ public class WeblogEntry {
 	@JcrChildNode private Author author;
 	@JcrChildNode private List<Comment> comments;
 	
+	/** Default Constructor */
+	public WeblogEntry() {
+	}
+
 	...
 }
 }}}
@@ -91,6 +103,10 @@ public class Comment {
 	@JcrProperty private String title;
 	@JcrProperty private String body;
 	@JcrProperty private Date publishDate;
+
+	/** Default Constructor */
+	public Comment() {
+	}
 
 	...
 }
@@ -112,6 +128,10 @@ public class MyClass {
     @JcrPath private String path;
     @JcrProperty(name = "my:singleValue") private int mySingleValue;
     @JcrChildNode(name = "my:child") private Child child;
+
+    /** Default Constructor */
+    public MyClass() {
+    }
 
     ...
 }
