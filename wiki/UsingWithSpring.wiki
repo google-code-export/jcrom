@@ -1,4 +1,3 @@
-
 #summary Using JCROM with Spring.
 #labels Phase-Implementation
 
