@@ -63,6 +63,14 @@ WeblogEntry entry = new WeblogEntry();
 entry.setAuthor(author);
 ...
 }}}
+	
+== Weak references ==
+
+Since release 2.0.1, JCROM also supports managing weak references. This is done by setting weak to true:
+
+{{{
+    @JcrReference(weak=true) private Author author;
+}}}
 
 == Loading references by path ==
 
