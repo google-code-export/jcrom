@@ -11,6 +11,24 @@ Note that this relies on using nt:unstructured node type for the Map container.
 
 Also note, that to use this feature, [DynamicInstantiation dynamic instantiation] MUST be turned on, and each entity stored in the map must have @JcrNode(classNameProperty="className"). This is required to allow JCROM to determine the class to instantiate at runtime.
 
+{{{
+Jcrom jcrom = new Jcrom(true, true);
+jcrom.map(Child.class);
+
+@JcrNode(classNameProperty = "className")
+public abstract class Child implements Serializable {
+
+    @JcrPath protected String path;
+    @JcrName protected String name;
+    
+    ...
+}
+}}}
+
+Also note that the key is the name of the child node. If the value is an object with a field annotated with @JcrName, the value of this field will be overwritten by the value of the key.
+
+If you enable to clean names of new nodes, you should use {{{PathUtils.createValidName(String)}}} method: {{{parent.getMap().put(mapper.getCleanName(child.getName()), child);}}}
+
 == Map for properties ==
 
 JCROM can map a java.util.Map of properties. JCROM will create an nt:unstructured node for the Map, and store each name-value pair in the Map as a property on that node. The Map must be parameterized with keys as java.lang.String, and values as a valid property type (or an array of such). Example:
