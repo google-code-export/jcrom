@@ -3,7 +3,7 @@
 
 == Using filters ==
 
-There are times when you don't want to load/update some/any child nodes or references. For example, we may want to list all the weblog entries, but without loading the comments for each entry. JCROM supports this with a NodeFilter parameter that can be used in the Jcrom.fromNode() and Jcrom.updateNode() methods.
+There are times when you don't want to load/update some/any child nodes, references or properties. For example, we may want to list all the weblog entries, but without loading the comments for each entry. JCROM supports this with a NodeFilter parameter that can be used in the Jcrom.fromNode() and Jcrom.updateNode() methods.
 
 The NodeFilter constructor takes three arguments:
 
@@ -38,3 +38,23 @@ try {
 In much the same way, sometimes we do not want to update the child nodes when updating a parent. For example, if we need to update the body property of the WeblogEntry, then there is no need to update all the comment child nodes. Therefore, the Jcrom.updateNode() methods accept the filter arguments as well.
 
 Note that the field name filter will not only apply to immediate children, but down the whole tree.
+
+Since release 2.0.1, JCROM also supports filters for JCR properties. To do this, you must prefix the property name with "prop:" (a constant exists, NodeFilter.PROPERTY_PREFIX).
+
+Unlike child nodes that are not loaded if maxDepth = 0, the properties of the current node are loaded.
+
+{{{
+Session session = ...;
+String weblogEntryName = ...;
+
+try {
+    Node weblogEntryNode = session.getRootNode()
+        .getNode("Weblog").getNode(weblogEntryName);
+    // Exclude title property
+    NodeFilter nodeFilter = new NodeFilter("-" +  NodeFilter.PROPERTY_PREFIX + "title", NodeFilter.DEPTH_INFINITE);
+    WeblogEntry weblogEntry 
+        = jcrom.fromNode(WeblogEntry.class, weblogEntryNode, nodeFilter);
+} finally {
+    session.logout();
+}
+}}}
