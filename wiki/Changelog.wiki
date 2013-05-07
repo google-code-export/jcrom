@@ -1,5 +1,11 @@
 #summary List of all JCROM releases, and issues resolved in each release.
 
+=Release 2.0.1 (07.05.2013)=
+
+This release includes fixes, improvements and new features, such as support for weak references, mapping protected properties, support for matching properties in NodeFilter.
+
+Issues resolved: http://code.google.com/p/jcrom/issues/list?can=1&q=label%3AMilestone-Release2.0.1
+
 =Release 2.0.0 (25.09.2012)=
 
 This release includes fixes and improvements in handling versions and recursive references, and a couple of enhancements.
