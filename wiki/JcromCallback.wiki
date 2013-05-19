@@ -1,0 +1,4 @@
+#summary Describes how to use JCROM callbacks in order to modify the default actions used to add a node, update a node, add mixin types....
+#labels Phase-Implementation
+
+= Jcrom Callbacks =
