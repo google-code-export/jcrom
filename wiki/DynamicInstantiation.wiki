@@ -157,3 +157,5 @@ public class ShapeContainer extends AbstractJcrEntity {
 }}}
 
 The ShapeContainer has a list of Shapes. JCROM will automatically store the class name of the implementing Shape class in a JCR property, and then use this to dynamically instantiate the correct implementation when creating a Shape object from a JCR node.
+
+Go [UserGuide back] to the overview.

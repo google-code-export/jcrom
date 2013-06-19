@@ -21,3 +21,5 @@ public class MyGuiceModule extends AbstractModule {
 }}}
 
 And then you can inject Jcrom into your DAOs.
+
+Go [UserGuide back] to the overview.

@@ -5,9 +5,18 @@
 
 It is often wise to abstract the underlying persistence strategy away from the calling code, by encapsulating the persistence calls within Data Access Objects (DAOs). That means that your controller (or action) classes can have a DAO object injected, and use it, without having to worry whether the object is being persisted to a database, XML, or JCR. Also, session management can be kept outside the scope of controllers.
 
-JCROM supports this methodology by providing a DAO interface, and an abstract DAO implementation that uses JCROM to map objects to/from JCR. Look at the [http://jcrom.googlecode.com/svn/trunk/jcrom/apidocs/org/jcrom/dao/JcrDAO.html javadoc for JcrDAO] to see which methods are implemented.
+JCROM supports this methodology by providing a DAO interface, and an abstract DAO implementation that uses JCROM to map objects to/from JCR. Look at the [http://jcrom.googlecode.com/svn/trunk/apidocs/org/jcrom/dao/JcrDAO.html javadoc for JcrDAO] to see which methods are implemented.
 
 JCROM offers an abstract implementation of this interface, AbstractJcrDAO, that implements all the methods (you can extend and add custom finder methods). Note that the finder methods can accept startIndex and resultSize arguments - this is useful when paginating over large result sets.
+
+Since release 2.1.0, methods with "childNameFilter String, int maxDepth" in parameters have been deprecated. You must use the equivalent methods with NodeFilter as a parameter.
+This allows to benefit from improvements made at the NodeFilter object (eg the new "filterDepth" parameter) and future improvements if any.
+
+{{{
+update(T entity, String childNameFilter, int maxDepth) -> update(T entity, NodeFilter nodeFilter)
+
+myDao.update(myEntity, "*", -1) -> myDao.update(myEntity, new NodeFilter("*", -1))
+}}}
 
 Let's look at how we could use the DAO support to simplify our WeblogEntry management. First of all, we would need to create a DAO class that extends AbstractJcrDAO:
 
@@ -220,3 +229,5 @@ public interface JcrUserDao extends GenericJcrDAO<JcrUser> {
 
 }
 }}}
+
+Go [UserGuide back] to the overview.

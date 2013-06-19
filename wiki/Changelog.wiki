@@ -1,5 +1,11 @@
 #summary List of all JCROM releases, and issues resolved in each release.
 
+=Release 2.1.0 (22.06.2013)=
+
+This release includes fixes, improvements, refactoring, particularly for testing compatibility with ModeShape, and a new feature, Jcrom Callbacks.
+
+Issues resolved: http://code.google.com/p/jcrom/issues/list?can=1&q=label%3AMilestone-Release2.1.0
+
 =Release 2.0.1 (07.05.2013)=
 
 This release includes fixes, improvements and new features, such as support for weak references, mapping protected properties, support for matching properties in NodeFilter.

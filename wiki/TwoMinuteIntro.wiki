@@ -1,4 +1,4 @@
-#summary A quick 2 minute intro to JCROM.
+#summary A quick 2 minutes intro to JCROM.
 #labels Featured
 
 = Annotate your Java classes =
@@ -166,4 +166,4 @@ List<Contact> allContacts = contactDAO.findAll(parentPath);
 
 In a web application environment, we would probably inject the Session and the Jcrom instance into the DAO, and then inject the DAO into a controller, so the controller would never directly deal with Jcrom or the Session.
 
-For more detailed description on how to use JCROM, refer to the UserGuide.
+For more detailed description on how to use JCROM, refer to the [UserGuide User Guide].

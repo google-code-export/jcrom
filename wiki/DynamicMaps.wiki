@@ -64,3 +64,5 @@ JCROM can map a java.util.Map of references. The key type must be java.lang.Stri
 @JcrReference Map<String,Object> singleReferences;
 @JcrReference Map<String,List<Object>> multiReferences;
 }}}
+
+Go [UserGuide back] to the overview.

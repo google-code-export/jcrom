@@ -161,3 +161,5 @@ Note that we have to specify the nt:unstructured node type. The reason for this 
 JCROM supports updating metdata only on file nodes. For example, you may just want to update the name of the photographer, leaving the file itself intact. To do this, just make sure that the data provider on JcrFile is *`null`*.
 
 JCROM supports mapping a list of JcrFile nodes, using a `java.util.List` (much in the same way as for properties and children).
+
+Go [UserGuide back] to the overview.

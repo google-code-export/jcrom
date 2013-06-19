@@ -4,6 +4,7 @@
 = User Guide =
 
  * [WhatIsJCROM What is JCROM?]
+ * [TwoMinuteIntro A quick 2 minutes intro to JCROM]
  * [AnnotatingClasses Annotating your Java classes]
   * [NodeTypes Node types]
   * [Properties Properties]

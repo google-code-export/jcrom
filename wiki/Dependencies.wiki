@@ -2,7 +2,7 @@
 
 = Dependencies =
 
-JCROM 2.0.0 depends on the following third party JARs:
+JCROM 2.1.0 depends on the following third party JARs:
 
   * JCR API, version 2.0 ([http://repo1.maven.org/maven2/javax/jcr/jcr/2.0/jcr-2.0.jar get it here])
   * CGLIB, version 2.2.2 ([http://repo1.maven.org/maven2/cglib/cglib/2.2.2/cglib-2.2.2.jar get it here])

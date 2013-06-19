@@ -97,3 +97,5 @@ Depending on the node types and/or mixin types you use when mapping a Java objec
   * _@JcrBaseVersionCreated_ - For a versioned node, stores the creation date of the base version.
   * _@JcrVersionName_ - For a node version, stores the name of that version.
   * _@JcrVersionCreated_ - For a node version, stores the creation date of that version.
+
+Go [UserGuide back] to the overview.

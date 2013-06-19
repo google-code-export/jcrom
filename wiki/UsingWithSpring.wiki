@@ -1304,3 +1304,5 @@ public interface GenericJcrDAO<T> extends JcrDAO<T> {
 
 }
 }}}
+
+Go [UserGuide back] to the overview.

@@ -95,3 +95,5 @@ In general, to annotate your object for JCROM, you do the following:
   * JCROM uses reflection to mapping Java classes. It must Always define the default constructor.
   * JCROM uses field level annotation, not method level. The fields can be private. Therefore there is no requirement for getter and setter methods.
   * JCROM handles inheritance, so annotations from superclasses are automatically detected.
+  
+Go [UserGuide back] to the overview.

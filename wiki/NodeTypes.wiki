@@ -53,3 +53,5 @@ public class MyClass {
 }}}
 
 With the above annotation, JCROM would store the full name of the class in a property called "className" on the JCR node. This is important when using dynamic instantiation, which is described in a later section.
+
+Go [UserGuide back] to the overview.

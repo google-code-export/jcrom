@@ -27,3 +27,5 @@ public class Comment {
 }}}
 
 JCROM will notice this annotation when creating a WeblogEntry instance from a JCR node, and inject the parent WeblogEntry into each Comment. Note that JCROM will ignore this annotation if the parent object is not being loaded.
+
+Go [UserGuide back] to the overview.
