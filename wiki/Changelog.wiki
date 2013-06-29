@@ -2,7 +2,7 @@
 
 =Release 2.1.0 (22.06.2013)=
 
-This release includes fixes, improvements, refactoring, particularly for testing compatibility with ModeShape, and a new feature, Jcrom Callbacks.
+This release includes fixes, new unit tests to check compatibility with ModeShape, refactoring, and a new feature, [JcromCallback JCROM Callbacks].
 
 Issues resolved: http://code.google.com/p/jcrom/issues/list?can=1&q=label%3AMilestone-Release2.1.0
 
