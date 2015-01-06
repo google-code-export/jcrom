@@ -1,4 +1,4 @@
-#summary The User Guide gives a brief description of JCROM to get you started. Written for version 2.0.0.
+#summary The User Guide gives a brief description of JCROM to get you started. Written for version 2.2.0.
 #labels Featured,Phase-Implementation
 
 = User Guide =
@@ -16,9 +16,11 @@
   * [DynamicMaps Dynamic Maps of properties, children, and files]
   * [LazyLoading Lazy loading]
   * [JcromCallback JCROM Callbacks]
+  * [CustomFieldConverter Custom Field Converters]
  * [MappingObjects Mapping objects to/from JCR]
   * [UsingFilters Using filters]
   * [DynamicInstantiation Programming to interfaces: Dynamic instantiation]
+  * [JavaFXPropertiesSupport JavaFX properties support]
  * [DaoSupport DAO support]
  * [UsingWithGuice Using with Guice]
  * [UsingWithSpring Using with Spring]

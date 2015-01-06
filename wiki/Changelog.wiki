@@ -1,5 +1,13 @@
 #summary List of all JCROM releases, and issues resolved in each release.
 
+=Release 2.2.0 (04.01.2014)=
+
+This release includes:
+  * [Properties Custom Field Converters], to customize the conversion from an entity attribute value to JCR property representation and conversely
+  * [JavaFXPropertiesSupport JavaFX properties support], to map Java objects with JavaFX properties directly to/from a JCR repository
+
+Issues resolved: http://code.google.com/p/jcrom/issues/list?can=1&q=label%3AMilestone-Release2.1.0
+
 =Release 2.1.0 (22.06.2013)=
 
 This release includes fixes, new unit tests to check compatibility with ModeShape, refactoring, and a new feature, [JcromCallback JCROM Callbacks].

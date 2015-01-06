@@ -1,12 +1,48 @@
-#summary List of runtime JAR dependencies, for version 2.0.0.
+#summary List of runtime JAR dependencies, for version 2.2.0.
 
 = Dependencies =
 
-JCROM 2.1.0 depends on the following third party JARs:
+JCROM 2.2.0 depends on the following third party JARs:
 
   * JCR API, version 2.0 ([http://repo1.maven.org/maven2/javax/jcr/jcr/2.0/jcr-2.0.jar get it here])
   * CGLIB, version 2.2.2 ([http://repo1.maven.org/maven2/cglib/cglib/2.2.2/cglib-2.2.2.jar get it here])
   * ASM, version 1.5.3 (CGLIB depends on this) ([http://repo1.maven.org/maven2/asm/asm/3.3.1/asm-3.3.1.jar get it here])
   * Apache Tika, version 1.1 ([http://repo1.maven.org/maven2/org/apache/tika/tika-core/1.1/tika-core-1.1.jar get it here])
+  * JavaFX, it's a weak dependency because this dependence is only required if you use JavaFX properties
+    JavaFX is not currently present on the Maven repository.
+    If you want to add it to your classpath, for example, you can declare a property whose value is the path to the JavaFX JAR in your settings.xml:
 
-If you use [http://maven.apache.org Maven2] to build your project, it will automatically download all dependencies for you.
+{{{
+<settings ...>
+...
+	<profiles>
+		<profile>
+			<id>javafx</id>
+			<activation>
+				<activebydefault>true</activebydefault>
+			</activation>
+			<properties>
+				<javafx.rt.jar>[JDK_PATH]/jre/lib/jfxrt.jar</javafx.rt.jar>
+			</properties>
+		</profile>
+	</profiles>
+...
+
+	<activeProfiles>
+		<activeProfile>javafx</activeProfile>
+	</activeProfiles>
+</settings>
+}}}
+
+     In your pom.xml, you add the following dependency:
+{{{
+<dependency>
+	<groupId>com.oracle</groupId>
+	<artifactId>javafx</artifactId>
+	<version>2.2</version>
+	<systemPath>${javafx.rt.jar}</systemPath>
+	<scope>system</scope>
+</dependency>
+}}}
+
+If you use [http://maven.apache.org Maven2] to build your project, it will automatically download all dependencies for you (except JavaFX).

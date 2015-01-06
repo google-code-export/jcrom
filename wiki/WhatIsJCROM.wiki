@@ -159,7 +159,7 @@ To use JCROM, you'll need the JCROM jar in your classpath. There are a few ways 
   <dependency>
 	<groupId>org.jcrom</groupId>
 	<artifactId>jcrom</artifactId>
-	<version>2.1.0</version>
+	<version>2.2.0</version>
   </dependency>
   }}}
   * Finally, you can check out from subversion and build it yourself. You will need [http://maven.apache.org Maven2] for this. After you've checked out the project, cd into the jcrom folder, and run "mvn install".

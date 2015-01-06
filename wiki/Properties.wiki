@@ -71,6 +71,33 @@ public class MyClass {
 }
 }}}
 
+Since release 2.2.0, JCROM allows to customize the conversion from an entity attribute value to JCR property representation and conversely.
+You must to implement the Converter interface as the following example:
+
+{{{
+public class ColorConverter implements Converter<Color, String> {
+
+  @Override
+  public String convertToJcrProperty(Color color) { ... }
+
+  @Override
+  public Color convertToEntityAttribute(String colorString) { ... }
+}
+}}}
+
+You must then use the converter parameter on the @JcrProperty annotation:
+
+{{{
+public class EntityWithConverter extends AbstractJcrEntity {
+
+  @JcrProperty(converter = ColorConverter.class)
+  private Color color;
+  
+  ...
+  
+}
+}}}
+
 === Enum properties ===
 
 JCROM supports mapping enums in the following way:
