@@ -16,7 +16,6 @@
   * [DynamicMaps Dynamic Maps of properties, children, and files]
   * [LazyLoading Lazy loading]
   * [JcromCallback JCROM Callbacks]
-  * [CustomFieldConverter Custom Field Converters]
  * [MappingObjects Mapping objects to/from JCR]
   * [UsingFilters Using filters]
   * [DynamicInstantiation Programming to interfaces: Dynamic instantiation]
