@@ -71,6 +71,8 @@ public class MyClass {
 }
 }}}
 
+== Custom converter ==
+
 Since release 2.2.0, JCROM allows to customize the conversion from an entity attribute value to JCR property representation and conversely.
 You must to implement the Converter interface as the following example:
 
